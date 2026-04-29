@@ -7,15 +7,10 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 )
 
-const (
-	defaultPort = "8080"
-	maxMB       = 250
-	defaultMB   = 200
-)
+const defaultPort = "8080"
 
 func main() {
 	port := os.Getenv("PORT")
@@ -24,8 +19,7 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/ping", withCORS(handlePing))
-	mux.HandleFunc("/download", withCORS(handleDownload))
+	mux.HandleFunc("/stream", withCORS(handleStream))
 	mux.HandleFunc("/upload", withCORS(handleUpload))
 	mux.HandleFunc("/health", withCORS(handleHealth))
 
@@ -36,50 +30,29 @@ func main() {
 	}
 }
 
-// handlePing returns a minimal payload for RTT measurement.
-func handlePing(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Cache-Control", "no-store")
-	w.Write([]byte(`{"pong":true}`))
-}
-
-// handleDownload streams N MB of pseudo-random bytes for download throughput measurement.
-func handleDownload(w http.ResponseWriter, r *http.Request) {
+// handleStream sends bytes indefinitely until the client disconnects.
+// The iOS client opens several parallel connections and cancels them after a fixed time window.
+func handleStream(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 
-	mb := defaultMB
-	if s := r.URL.Query().Get("mb"); s != "" {
-		if v, err := strconv.Atoi(s); err == nil && v > 0 && v <= maxMB {
-			mb = v
-		}
-	}
-
-	total := mb * 1_000_000
-	chunk := make([]byte, 256*1024) // 256 KB chunks
+	chunk := make([]byte, 256*1024)
 	rand.Read(chunk)
 
-	// Disable Cloud Run / proxy response buffering so bytes flow immediately.
 	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("X-Accel-Buffering", "no")
-	// Omit Content-Length to force chunked transfer — better for streaming.
 
 	flusher, canFlush := w.(http.Flusher)
 
-	written := 0
-	for written < total {
-		n := min(len(chunk), total-written)
-		if _, err := w.Write(chunk[:n]); err != nil {
+	// Stream until client disconnects or server hits the safety cap (60 s).
+	deadline := time.Now().Add(60 * time.Second)
+	for time.Now().Before(deadline) {
+		if _, err := w.Write(chunk); err != nil {
 			return
 		}
-		written += n
 		if canFlush {
 			flusher.Flush()
 		}
@@ -135,9 +108,3 @@ func withCORS(next http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}

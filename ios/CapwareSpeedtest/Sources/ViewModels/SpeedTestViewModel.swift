@@ -41,7 +41,7 @@ final class SpeedTestViewModel: ObservableObject {
             self.progress     = 0
         }
 
-        svc.onProgress = { [weak self] phase, value, progress, _ in
+        svc.onProgress = { [weak self] phase, value, progress in
             guard let self else { return }
             self.progress = progress
             switch phase {

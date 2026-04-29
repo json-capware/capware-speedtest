@@ -2,13 +2,11 @@ import Foundation
 
 enum SpeedTestError: Error, LocalizedError {
     case invalidURL
-    case noData
     case networkError(Error)
 
     var errorDescription: String? {
         switch self {
         case .invalidURL:           return "Invalid server URL"
-        case .noData:               return "No data received"
         case .networkError(let e):  return e.localizedDescription
         }
     }
@@ -19,8 +17,8 @@ enum TestPhase {
 }
 
 struct SpeedResult {
-    var unloadedPingMs: Double       = 0  // idle baseline
-    var downloadLoadedPingMs: Double = 0  // ping while link is saturated
+    var unloadedPingMs: Double       = 0
+    var downloadLoadedPingMs: Double = 0
     var uploadLoadedPingMs: Double   = 0
     var downloadMbps: Double         = 0
     var uploadMbps: Double           = 0
@@ -29,30 +27,29 @@ struct SpeedResult {
 final class SpeedTestService: NSObject {
 
     static let backendURL = "https://capware-speedtest-458492091300.us-central1.run.app"
-    // CDN-backed GCS file — served from the nearest Google edge node globally.
-    // Cert provisioning: https://34.36.55.236.sslip.io (allow ~15 min after first deploy)
-    static let cdnFileURL = "https://34.36.55.236.sslip.io/test-100mb.bin"
 
     private let unloadedPingCount = 10
-    private let downloadMB        = 100
-    private let uploadMB          = 25
+    private let testDuration: TimeInterval = 10
+    private let downloadStreams = 4
+    // 200 MB gives headroom up to ~160 Mbps for 10 s; cancel early if we hit it.
+    private let uploadPayloadBytes = 200 * 1_000_000
 
-    // Separate sessions so delegate callbacks never bleed into ping tasks
+    // Ping uses a plain session (no delegate — keeps callbacks isolated)
     private let pingSession = URLSession(configuration: .ephemeral)
+    // Stream session shares one delegate for byte counting
     private var streamSession: URLSession!
 
-    // Callbacks — always called on main thread
+    // Callbacks — always delivered on the main thread
     var onPhaseStart: ((TestPhase) -> Void)?
-    /// phase, live speed (Mbps) or latency (ms), 0–1 progress, optional loaded ping ms
-    var onProgress:   ((TestPhase, Double, Double, Double?) -> Void)?
+    var onProgress:   ((TestPhase, Double, Double) -> Void)?  // phase, Mbps or ms, 0–1 progress
     var onComplete:   ((Result<SpeedResult, SpeedTestError>) -> Void)?
 
-    // State for the active streaming task
-    private var taskStart      = Date()
+    // Mutable state — bytesMoved only written from the delegate serial queue
+    private var taskStart   = Date()
     private var bytesMoved: Int64 = 0
-    private var expectedBytes: Int64 = 0
-    private var streamContinuation: CheckedContinuation<Double, Error>?
+    private var activeTasks: [URLSessionTask] = []
     private var cancelled = false
+    private var runTask: Task<Void, Never>?
 
     override init() {
         super.init()
@@ -63,50 +60,50 @@ final class SpeedTestService: NSObject {
 
     func start() {
         cancelled = false
-        Task { await runAll() }
+        runTask = Task { await runAll() }
     }
 
     func cancel() {
         cancelled = true
-        streamSession.invalidateAndCancel()
+        runTask?.cancel()
+        activeTasks.forEach { $0.cancel() }
+        activeTasks = []
     }
 
-    // MARK: - Runner
+    // MARK: - Orchestrator
 
     private func runAll() async {
         var result = SpeedResult()
         do {
             // 1. Unloaded ping
             fire { self.onPhaseStart?(.ping) }
-            result.unloadedPingMs = try await measurePings(count: unloadedPingCount) { avg, progress in
-                self.fire { self.onProgress?(.ping, avg, progress, nil) }
+            result.unloadedPingMs = try await measurePings(count: unloadedPingCount) { avg, p in
+                self.fire { self.onProgress?(.ping, avg, p) }
             }
-
             guard !cancelled else { return }
 
-            // 2. Download + concurrent loaded ping
+            // 2. Download (parallel streams) + concurrent loaded ping
             fire { self.onPhaseStart?(.download) }
-            let (dlMbps, dlPing) = try await measureTransferWithLoadedPing(isDownload: true)
-            result.downloadMbps        = dlMbps
+            let (dl, dlPing) = try await timedTransfer(phase: .download)
+            result.downloadMbps        = dl
             result.downloadLoadedPingMs = dlPing
-
             guard !cancelled else { return }
 
             // 3. Upload + concurrent loaded ping
             fire { self.onPhaseStart?(.upload) }
-            let (ulMbps, ulPing) = try await measureTransferWithLoadedPing(isDownload: false)
-            result.uploadMbps        = ulMbps
+            let (ul, ulPing) = try await timedTransfer(phase: .upload)
+            result.uploadMbps        = ul
             result.uploadLoadedPingMs = ulPing
 
             fire { self.onComplete?(.success(result)) }
         } catch {
+            guard !cancelled else { return }
             fire { self.onComplete?(.failure(.networkError(error))) }
         }
     }
 
-    // MARK: - Ping helpers
+    // MARK: - Ping
 
-    /// Fires `count` HEAD requests to google.com sequentially, returns average RTT ms.
     private func measurePings(
         count: Int,
         onSample: @escaping (Double, Double) -> Void
@@ -119,105 +116,112 @@ final class SpeedTestService: NSObject {
             req.httpMethod = "HEAD"
             let t = Date()
             _ = try await pingSession.data(for: req)
-            samples.append(Date().timeIntervalSince(t) * 1000)
+            samples.append(Date().timeIntervalSince(t) * 1_000)
             let avg = samples.reduce(0, +) / Double(samples.count)
             onSample(avg, Double(i + 1) / Double(count))
         }
         return samples.reduce(0, +) / Double(samples.count)
     }
 
-    /// Runs a single HEAD to google.com, returns RTT ms.
     private func singlePing() async -> Double? {
         guard !cancelled else { return nil }
-        let url = URL(string: "https://www.google.com")!
-        var req = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        var req = URLRequest(
+            url: URL(string: "https://www.google.com")!,
+            cachePolicy: .reloadIgnoringLocalAndRemoteCacheData
+        )
         req.httpMethod = "HEAD"
         let t = Date()
         guard (try? await pingSession.data(for: req)) != nil else { return nil }
-        return Date().timeIntervalSince(t) * 1000
+        return Date().timeIntervalSince(t) * 1_000
     }
 
-    // MARK: - Transfer with concurrent loaded latency
+    // MARK: - Timed transfer with concurrent loaded-latency ping
 
-    private func measureTransferWithLoadedPing(isDownload: Bool) async throws -> (Double, Double) {
-        // Shared state between the two concurrent tasks
+    private func timedTransfer(phase: TestPhase) async throws -> (mbps: Double, loadedPingMs: Double) {
         actor PingAccumulator {
-            var samples: [Double] = []
-            var running = true
+            private var samples: [Double] = []
+            private(set) var running = true
             func add(_ ms: Double) { samples.append(ms) }
             func stop() { running = false }
-            var isRunning: Bool { running }
             var average: Double {
-                guard !samples.isEmpty else { return 0 }
-                return samples.reduce(0, +) / Double(samples.count)
+                samples.isEmpty ? 0 : samples.reduce(0, +) / Double(samples.count)
             }
         }
+
         let acc = PingAccumulator()
-
-        // Ping loop runs concurrently for the duration of the transfer
         let pingTask = Task {
-            while await acc.isRunning {
-                if let ms = await self.singlePing() {
-                    await acc.add(ms)
-                }
-            }
+            while await acc.running { if let ms = await singlePing() { await acc.add(ms) } }
         }
+        defer { pingTask.cancel() }
 
-        // Run the actual transfer
-        let speed = try await (isDownload ? runDownload() : runUpload())
-
+        let mbps = try await (phase == .download ? runTimedDownload() : runTimedUpload())
         await acc.stop()
-        pingTask.cancel()
-
-        return (speed, await acc.average)
+        return (mbps, await acc.average)
     }
 
-    // MARK: - Download
+    // MARK: - Download: N parallel streams, cancelled after testDuration
 
-    private func runDownload() async throws -> Double {
-        bytesMoved    = 0
-        expectedBytes = Int64(downloadMB) * 1_000_000
-        taskStart     = Date()
+    private func runTimedDownload() async throws -> Double {
+        guard let url = URL(string: "\(Self.backendURL)/stream") else { throw SpeedTestError.invalidURL }
 
-        return try await withCheckedThrowingContinuation { cont in
-            self.streamContinuation = cont
-            guard let url = URL(string: Self.cdnFileURL) else {
-                cont.resume(throwing: SpeedTestError.invalidURL); return
-            }
+        bytesMoved = 0
+        taskStart  = .now
+        activeTasks = (0..<downloadStreams).map { _ in
             var req = URLRequest(url: url)
             req.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-            streamSession.dataTask(with: req).resume()
+            return streamSession.dataTask(with: req)
         }
+        activeTasks.forEach { $0.resume() }
+
+        try await runProgressTimer(phase: .download)
+
+        let elapsed = Date().timeIntervalSince(taskStart)
+        activeTasks.forEach { $0.cancel() }
+        activeTasks = []
+        return mbps(bytes: bytesMoved, elapsed: elapsed)
     }
 
-    // MARK: - Upload
+    // MARK: - Upload: single stream, cancelled after testDuration
 
-    private func runUpload() async throws -> Double {
-        let bytes     = uploadMB * 1_000_000
-        bytesMoved    = 0
-        expectedBytes = Int64(bytes)
-        taskStart     = Date()
+    private func runTimedUpload() async throws -> Double {
+        guard let url = URL(string: "\(Self.backendURL)/upload") else { throw SpeedTestError.invalidURL }
 
-        let payload = Data(count: bytes) // zeros are fine for throughput testing
+        bytesMoved = 0
+        taskStart  = .now
 
-        return try await withCheckedThrowingContinuation { cont in
-            self.streamContinuation = cont
-            guard let url = URL(string: "\(Self.backendURL)/upload") else {
-                cont.resume(throwing: SpeedTestError.invalidURL); return
-            }
-            var req = URLRequest(url: url)
-            req.httpMethod = "POST"
-            req.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
-            streamSession.uploadTask(with: req, from: payload).resume()
-        }
+        var req = URLRequest(url: url)
+        req.httpMethod = "POST"
+        req.setValue("application/octet-stream", forHTTPHeaderField: "Content-Type")
+        let payload = Data(count: uploadPayloadBytes)
+        let task = streamSession.uploadTask(with: req, from: payload)
+        activeTasks = [task]
+        task.resume()
+
+        try await runProgressTimer(phase: .upload)
+
+        let elapsed = Date().timeIntervalSince(taskStart)
+        activeTasks.forEach { $0.cancel() }
+        activeTasks = []
+        return mbps(bytes: bytesMoved, elapsed: elapsed)
     }
 
     // MARK: - Helpers
 
-    private func currentMbps() -> Double {
-        let elapsed = Date().timeIntervalSince(taskStart)
-        guard elapsed > 0.05 else { return 0 }
-        return Double(bytesMoved) / elapsed / 125_000
+    /// Fires progress updates every 200 ms for testDuration seconds.
+    private func runProgressTimer(phase: TestPhase) async throws {
+        let start = Date()
+        while Date().timeIntervalSince(start) < testDuration {
+            try Task.checkCancellation()
+            try await Task.sleep(for: .milliseconds(200))
+            let elapsed = Date().timeIntervalSince(taskStart)
+            let speed   = mbps(bytes: bytesMoved, elapsed: elapsed)
+            let progress = min(Date().timeIntervalSince(start) / testDuration, 1)
+            fire { self.onProgress?(phase, speed, progress) }
+        }
+    }
+
+    private func mbps(bytes: Int64, elapsed: TimeInterval) -> Double {
+        elapsed > 0.05 ? Double(bytes) / elapsed / 125_000 : 0
     }
 
     private func fire(_ block: @escaping () -> Void) {
@@ -229,13 +233,12 @@ final class SpeedTestService: NSObject {
 
 extension SpeedTestService: URLSessionDataDelegate, URLSessionTaskDelegate {
 
+    // Download bytes
     func urlSession(_ session: URLSession, dataTask: URLSessionDataTask, didReceive data: Data) {
         bytesMoved += Int64(data.count)
-        let speed    = currentMbps()
-        let progress = min(Double(bytesMoved) / Double(expectedBytes), 1)
-        fire { self.onProgress?(.download, speed, progress, nil) }
     }
 
+    // Upload bytes
     func urlSession(
         _ session: URLSession, task: URLSessionTask,
         didSendBodyData bytesSent: Int64,
@@ -243,16 +246,8 @@ extension SpeedTestService: URLSessionDataDelegate, URLSessionTaskDelegate {
         totalBytesExpectedToSend: Int64
     ) {
         bytesMoved = totalBytesSent
-        let speed    = currentMbps()
-        let progress = totalBytesExpectedToSend > 0
-            ? Double(totalBytesSent) / Double(totalBytesExpectedToSend) : 0
-        fire { self.onProgress?(.upload, speed, progress, nil) }
     }
 
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        let cont = streamContinuation
-        streamContinuation = nil
-        if let error { cont?.resume(throwing: error); return }
-        cont?.resume(returning: currentMbps())
-    }
+    // Cancellation is expected — no action needed in the time-based model
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {}
 }
