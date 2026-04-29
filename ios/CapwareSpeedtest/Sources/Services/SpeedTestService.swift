@@ -29,6 +29,9 @@ struct SpeedResult {
 final class SpeedTestService: NSObject {
 
     static let backendURL = "https://capware-speedtest-458492091300.us-central1.run.app"
+    // CDN-backed GCS file — served from the nearest Google edge node globally.
+    // Cert provisioning: https://34.36.55.236.sslip.io (allow ~15 min after first deploy)
+    static let cdnFileURL = "https://34.36.55.236.sslip.io/test-200mb.bin"
 
     private let unloadedPingCount = 10
     private let downloadMB        = 200
@@ -178,7 +181,7 @@ final class SpeedTestService: NSObject {
 
         return try await withCheckedThrowingContinuation { cont in
             self.streamContinuation = cont
-            guard let url = URL(string: "\(Self.backendURL)/download?mb=\(downloadMB)") else {
+            guard let url = URL(string: Self.cdnFileURL) else {
                 cont.resume(throwing: SpeedTestError.invalidURL); return
             }
             var req = URLRequest(url: url)
