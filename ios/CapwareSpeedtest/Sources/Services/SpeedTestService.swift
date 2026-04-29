@@ -25,7 +25,7 @@ struct SpeedResult {
 final class SpeedTestService: NSObject {
 
     // GCS object — served directly from Google Storage (much higher throughput than Cloud Run)
-    static let gcsDownloadURL = "https://storage.googleapis.com/capware-speedtest-cdn/test-100mb.bin"
+    static let gcsDownloadURL = "https://storage.googleapis.com/capware-speedtest-cdn/test-1gb.bin"
     static let backendURL     = "https://capware-speedtest-458492091300.us-central1.run.app"
 
     private let unloadedPingCount   = 10
