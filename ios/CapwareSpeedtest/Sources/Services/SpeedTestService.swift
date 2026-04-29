@@ -31,10 +31,10 @@ final class SpeedTestService: NSObject {
     static let backendURL = "https://capware-speedtest-458492091300.us-central1.run.app"
     // CDN-backed GCS file — served from the nearest Google edge node globally.
     // Cert provisioning: https://34.36.55.236.sslip.io (allow ~15 min after first deploy)
-    static let cdnFileURL = "https://34.36.55.236.sslip.io/test-200mb.bin"
+    static let cdnFileURL = "https://34.36.55.236.sslip.io/test-100mb.bin"
 
     private let unloadedPingCount = 10
-    private let downloadMB        = 200
+    private let downloadMB        = 100
     private let uploadMB          = 25
 
     // Separate sessions so delegate callbacks never bleed into ping tasks
