@@ -23,7 +23,7 @@ struct SpeedSample {
 final class SpeedTestService: NSObject {
 
     // GCP Cloud Run backend — update with deployed URL
-    static let baseURL = "https://capware-speedtest-<hash>-uc.a.run.app"
+    static let baseURL = "https://capware-speedtest-458492091300.us-central1.run.app"
 
     // Download size in MB for the test
     private let testSizeMB = 25
