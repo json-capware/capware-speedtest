@@ -25,8 +25,11 @@ struct SpeedResult {
 final class SpeedTestService: NSObject {
 
     // GCS object — served directly from Google Storage (much higher throughput than Cloud Run)
-    static let gcsDownloadURL = "https://storage.googleapis.com/capware-speedtest-cdn/test-1gb.bin"
-    static let backendURL     = "https://capware-speedtest-458492091300.us-central1.run.app"
+    static let gcsDownloadURL  = "https://storage.googleapis.com/capware-speedtest-cdn/test-1gb.bin"
+    static let backendURL      = "https://capware-speedtest-458492091300.us-central1.run.app"
+    // Ping same host as the transfer so we measure latency on the actual path.
+    static let downloadPingURL = "https://storage.googleapis.com/"
+    static let uploadPingURL   = "\(backendURL)/health"
 
     private let unloadedPingCount   = 10
     private let testDuration: TimeInterval = 10
@@ -81,13 +84,13 @@ final class SpeedTestService: NSObject {
             guard !cancelled else { return }
 
             fire { self.onPhaseStart?(.download) }
-            let (dl, dlPing) = try await withLoadedPing { try await self.runDownload() }
+            let (dl, dlPing) = try await withLoadedPing(pingURL: Self.downloadPingURL) { try await self.runDownload() }
             result.downloadMbps        = dl
             result.downloadLoadedPingMs = dlPing
             guard !cancelled else { return }
 
             fire { self.onPhaseStart?(.upload) }
-            let (ul, ulPing) = try await withLoadedPing { try await self.runUpload() }
+            let (ul, ulPing) = try await withLoadedPing(pingURL: Self.uploadPingURL) { try await self.runUpload() }
             result.uploadMbps        = ul
             result.uploadLoadedPingMs = ulPing
 
@@ -100,8 +103,10 @@ final class SpeedTestService: NSObject {
 
     // MARK: - Unloaded ping
 
+    // Reports the minimum RTT across `count` pings — same methodology as fast.com.
+    // Minimum reflects true propagation delay; average is inflated by jitter.
     private func measurePings(count: Int, onSample: @escaping (Double, Double) -> Void) async throws -> Double {
-        let url = URL(string: "https://www.google.com")!
+        let url = URL(string: Self.downloadPingURL)!
         var samples: [Double] = []
         for i in 0..<count {
             guard !cancelled else { throw CancellationError() }
@@ -110,27 +115,28 @@ final class SpeedTestService: NSObject {
             let t = Date()
             _ = try await pingSession.data(for: req)
             samples.append(Date().timeIntervalSince(t) * 1_000)
-            let avg = samples.reduce(0, +) / Double(samples.count)
-            onSample(avg, Double(i + 1) / Double(count))
+            let current = samples.min()!
+            onSample(current, Double(i + 1) / Double(count))
         }
-        return samples.reduce(0, +) / Double(samples.count)
+        return samples.min()!
     }
 
     // MARK: - Loaded-latency wrapper
 
-    /// Runs a transfer and concurrently pings google.com throughout to measure loaded latency.
-    private func withLoadedPing(_ transfer: @escaping () async throws -> Double) async throws -> (Double, Double) {
+    /// Runs a transfer and concurrently pings `pingURL` to measure loaded latency on the same path.
+    private func withLoadedPing(pingURL: String, _ transfer: @escaping () async throws -> Double) async throws -> (Double, Double) {
         actor PingAcc {
             private var samples: [Double] = []
             private(set) var running = true
             func add(_ ms: Double) { samples.append(ms) }
             func stop() { running = false }
-            var average: Double { samples.isEmpty ? 0 : samples.reduce(0, +) / Double(samples.count) }
+            // Minimum RTT during load = most accurate measure of bufferbloat
+            var result: Double { samples.isEmpty ? 0 : samples.min()! }
         }
         let acc = PingAcc()
+        let url = URL(string: pingURL)!
         let pingTask = Task { [weak self] in
             guard let self else { return }
-            let url = URL(string: "https://www.google.com")!
             while await acc.running && !self.cancelled {
                 var req = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
                 req.httpMethod = "HEAD"
@@ -142,7 +148,7 @@ final class SpeedTestService: NSObject {
         defer { pingTask.cancel() }
         let mbps = try await transfer()
         await acc.stop()
-        return (mbps, await acc.average)
+        return (mbps, await acc.result)
     }
 
     // MARK: - Download (GCS, single stream, 10 s cap)
