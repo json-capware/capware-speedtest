@@ -62,12 +62,16 @@ func handleDownload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	total := mb * 1_000_000
-	chunk := make([]byte, 32*1024)
+	chunk := make([]byte, 256*1024) // 256 KB chunks
 	rand.Read(chunk)
 
+	// Disable Cloud Run / proxy response buffering so bytes flow immediately.
 	w.Header().Set("Content-Type", "application/octet-stream")
-	w.Header().Set("Content-Length", strconv.Itoa(total))
 	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("X-Accel-Buffering", "no")
+	// Omit Content-Length to force chunked transfer — better for streaming.
+
+	flusher, canFlush := w.(http.Flusher)
 
 	written := 0
 	for written < total {
@@ -76,6 +80,9 @@ func handleDownload(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		written += n
+		if canFlush {
+			flusher.Flush()
+		}
 	}
 }
 
