@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
+	"io"
 	"log/slog"
 	"math/rand"
 	"net/http"
@@ -13,8 +13,8 @@ import (
 
 const (
 	defaultPort = "8080"
-	maxMB       = 100
-	defaultMB   = 25
+	maxMB       = 250
+	defaultMB   = 200
 )
 
 func main() {
@@ -24,7 +24,9 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+	mux.HandleFunc("/ping", withCORS(handlePing))
 	mux.HandleFunc("/download", withCORS(handleDownload))
+	mux.HandleFunc("/upload", withCORS(handleUpload))
 	mux.HandleFunc("/health", withCORS(handleHealth))
 
 	slog.Info("capware speedtest backend starting", "port", port)
@@ -34,7 +36,18 @@ func main() {
 	}
 }
 
-// handleDownload streams N MB of random bytes so the iOS client can measure throughput.
+// handlePing returns a minimal payload for RTT measurement.
+func handlePing(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Cache-Control", "no-store")
+	w.Write([]byte(`{"pong":true}`))
+}
+
+// handleDownload streams N MB of pseudo-random bytes for download throughput measurement.
 func handleDownload(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -49,22 +62,49 @@ func handleDownload(w http.ResponseWriter, r *http.Request) {
 	}
 
 	total := mb * 1_000_000
-	chunk := make([]byte, 32*1024) // 32 KB chunks
-	rand.Read(chunk)               // fill once; good enough for throughput tests
+	chunk := make([]byte, 32*1024)
+	rand.Read(chunk)
 
 	w.Header().Set("Content-Type", "application/octet-stream")
 	w.Header().Set("Content-Length", strconv.Itoa(total))
 	w.Header().Set("Cache-Control", "no-store")
-	w.Header().Set("X-Test-Size-MB", strconv.Itoa(mb))
 
 	written := 0
 	for written < total {
 		n := min(len(chunk), total-written)
 		if _, err := w.Write(chunk[:n]); err != nil {
-			return // client disconnected — normal for cancelled tests
+			return
 		}
 		written += n
 	}
+}
+
+// handleUpload drains the request body and reports upload throughput.
+func handleUpload(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	start := time.Now()
+	n, err := io.Copy(io.Discard, r.Body)
+	if err != nil {
+		http.Error(w, "read error", http.StatusInternalServerError)
+		return
+	}
+	elapsed := time.Since(start).Seconds()
+
+	var mbps float64
+	if elapsed > 0 {
+		mbps = float64(n) / elapsed / 125_000
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]any{
+		"bytes":   n,
+		"elapsed": elapsed,
+		"mbps":    mbps,
+	})
 }
 
 func handleHealth(w http.ResponseWriter, r *http.Request) {
@@ -78,8 +118,8 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 func withCORS(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
@@ -94,6 +134,3 @@ func min(a, b int) int {
 	}
 	return b
 }
-
-// Ensure fmt is used (for potential debug prints during dev).
-var _ = fmt.Sprintf
