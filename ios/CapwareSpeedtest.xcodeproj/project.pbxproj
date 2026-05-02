@@ -10,15 +10,25 @@
 		3CA53514C76F16185DE22130 /* ResultBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */; };
 		7D151243D4F517FAD262DABC /* SpeedGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE000198B43279B75838C83 /* SpeedGaugeView.swift */; };
 		9A9CE7A54D9272C38018672E /* SpeedTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9835901855368004CFD6A5 /* SpeedTestService.swift */; };
+		A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FAC720011799EF1F3701063 /* Assets.xcassets */; };
 		BE5B481BD12370CF9E990DFE /* CapwareSpeedtestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6CF76B29EDD0D8100A9E84 /* CapwareSpeedtestApp.swift */; };
 		C62E8BFE0E748DFBE57122C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0328095AFDA7261B5406890 /* ContentView.swift */; };
 		CDC0EDE23D6724B2DA4138EB /* SpeedTestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24772561FAB2C28E22A69703 /* SpeedTestViewModel.swift */; };
+		9F131267EC664DC3BE12D6FB /* TestRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8574311F051949D6AA2161B7 /* TestRecord.swift */; };
+		6AA2739B88F947BFA95B69FF /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26A1B01C4F5840F5835573B6 /* HistoryStore.swift */; };
+		8309159BD877490ABD461B76 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD3A2309345449189AEBD74B /* HistoryView.swift */; };
+		8DB8372E707E4359A8A567A9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697F86096E224C4EAC3501DF /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		24772561FAB2C28E22A69703 /* SpeedTestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestViewModel.swift; sourceTree = "<group>"; };
 		3A9835901855368004CFD6A5 /* SpeedTestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestService.swift; sourceTree = "<group>"; };
+		8574311F051949D6AA2161B7 /* TestRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRecord.swift; sourceTree = "<group>"; };
+		26A1B01C4F5840F5835573B6 /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
+		DD3A2309345449189AEBD74B /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		697F86096E224C4EAC3501DF /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5EC174D7E22DCB6340CF2B7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		7FAC720011799EF1F3701063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BAE000198B43279B75838C83 /* SpeedGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedGaugeView.swift; sourceTree = "<group>"; };
 		D0328095AFDA7261B5406890 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		EA473A97A23AF7A94B3FC86E /* CapwareSpeedtest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CapwareSpeedtest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -31,6 +41,7 @@
 			isa = PBXGroup;
 			children = (
 				D29CFE0C82E14BC10090CE2A /* App */,
+				2051D777062744B9B545ED9D /* Models */,
 				70F819E2DA8A918C86BD911D /* Services */,
 				9AF6AC438729C8549DE0B896 /* ViewModels */,
 				F978A4994603D16A9ABC1FE0 /* Views */,
@@ -42,16 +53,26 @@
 		5CD94B941790980A94EF6C91 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				7FAC720011799EF1F3701063 /* Assets.xcassets */,
 				5EC174D7E22DCB6340CF2B7D /* Info.plist */,
 			);
 			name = Resources;
 			path = CapwareSpeedtest/Resources;
 			sourceTree = "<group>";
 		};
+		2051D777062744B9B545ED9D /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8574311F051949D6AA2161B7 /* TestRecord.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		70F819E2DA8A918C86BD911D /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				3A9835901855368004CFD6A5 /* SpeedTestService.swift */,
+				26A1B01C4F5840F5835573B6 /* HistoryStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -93,6 +114,8 @@
 			isa = PBXGroup;
 			children = (
 				D0328095AFDA7261B5406890 /* ContentView.swift */,
+				DD3A2309345449189AEBD74B /* HistoryView.swift */,
+				697F86096E224C4EAC3501DF /* SettingsView.swift */,
 				F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */,
 				BAE000198B43279B75838C83 /* SpeedGaugeView.swift */,
 			);
@@ -107,6 +130,7 @@
 			buildConfigurationList = 7ECC3E1B76D0EC758FE29517 /* Build configuration list for PBXNativeTarget "CapwareSpeedtest" */;
 			buildPhases = (
 				34C2A1FDF67459ED1090F2DA /* Sources */,
+				006ED24B1171A056AB226B81 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -129,7 +153,7 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					A41967EB36EA21465B3B015C = {
-						DevelopmentTeam = "";
+						DevelopmentTeam = QXA82BVMJ6;
 					};
 				};
 			};
@@ -152,6 +176,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		006ED24B1171A056AB226B81 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		34C2A1FDF67459ED1090F2DA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -159,9 +194,13 @@
 			files = (
 				BE5B481BD12370CF9E990DFE /* CapwareSpeedtestApp.swift in Sources */,
 				C62E8BFE0E748DFBE57122C8 /* ContentView.swift in Sources */,
+				8309159BD877490ABD461B76 /* HistoryView.swift in Sources */,
+				8DB8372E707E4359A8A567A9 /* SettingsView.swift in Sources */,
 				3CA53514C76F16185DE22130 /* ResultBadge.swift in Sources */,
 				7D151243D4F517FAD262DABC /* SpeedGaugeView.swift in Sources */,
 				9A9CE7A54D9272C38018672E /* SpeedTestService.swift in Sources */,
+				6AA2739B88F947BFA95B69FF /* HistoryStore.swift in Sources */,
+				9F131267EC664DC3BE12D6FB /* TestRecord.swift in Sources */,
 				CDC0EDE23D6724B2DA4138EB /* SpeedTestViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,9 +257,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = QXA82BVMJ6;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -300,9 +339,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = QXA82BVMJ6;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

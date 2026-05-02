@@ -1,6 +1,6 @@
-# Capware Speed Test
+# Pulse Internet Speed Test
 
-iOS download-speed tester backed by a GCP Cloud Run service.
+iOS speed tester backed by a GCP Cloud Run service. Measures download, upload, ping, and jitter using parallel streams.
 
 ## Structure
 
@@ -14,7 +14,7 @@ speedtest app/
 
 Open `ios/CapwareSpeedtest.xcodeproj` in Xcode 15+. Requires iOS 17+.
 
-Before building, update `SpeedTestService.baseURL` with your deployed Cloud Run URL.
+Before building, update `SpeedTestService.backendURL` in `ios/CapwareSpeedtest/Sources/Services/SpeedTestService.swift` with your deployed Cloud Run URL.
 
 ## Backend
 
@@ -35,11 +35,12 @@ export GOOGLE_CLOUD_PROJECT=your-project-id
 ./deploy.sh
 ```
 
-Copy the printed service URL into `ios/CapwareSpeedtest/Sources/Services/SpeedTestService.swift` → `baseURL`.
+Copy the printed service URL into `SpeedTestService.backendURL`.
 
 ## How the speed test works
 
-1. iOS app opens a streaming `URLSessionDataTask` to `GET /download?mb=25`
-2. `URLSessionDataDelegate` accumulates bytes received and timestamps
-3. Speed (Mbps) = `bytes / elapsed / 125_000` — updated every chunk
-4. Final result displayed with a quality label (Slow / Fair / Good / Fast / Blazing)
+1. **Unloaded ping** — 8 sequential HEAD requests to Cloudflare `1.1.1.1` measure base latency and jitter
+2. **Download** — 6 parallel streaming `GET /stream` tasks saturate bandwidth; bytes received drive a 3-second rolling window speed calculation
+3. **Upload** — 4 parallel 50 MB POST tasks auto-restart on completion to keep bandwidth saturated
+4. **Loaded ping** — concurrent HEAD requests to `/health` during download and upload measure latency under load
+5. **ISP detection** — parallel `ipwho.is` lookup resolves the carrier name

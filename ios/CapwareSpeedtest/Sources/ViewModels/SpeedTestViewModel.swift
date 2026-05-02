@@ -14,17 +14,25 @@ final class SpeedTestViewModel: ObservableObject {
 
     // Live values during the active phase
     @Published var currentMbps: Double = 0
-    @Published var currentPingMs: Double = 0   // unloaded ping during ping phase
+    @Published var currentPingMs: Double = 0
+    @Published var currentJitterMs: Double = 0
     @Published var progress: Double = 0
 
     // Accumulated results as each phase completes
     @Published var unloadedPingMs: Double?
+    @Published var jitterMs: Double?
     @Published var downloadMbps: Double?
     @Published var downloadLoadedPingMs: Double?
+    @Published var downloadJitterMs: Double?
     @Published var uploadMbps: Double?
     @Published var uploadLoadedPingMs: Double?
+    @Published var uploadJitterMs: Double?
+    @Published var ispName: String?
 
     private var service: SpeedTestService?
+    private weak var history: HistoryStore?
+
+    init(history: HistoryStore) { self.history = history }
 
     func run() {
         guard case .idle = state else { return }
@@ -52,16 +60,35 @@ final class SpeedTestViewModel: ObservableObject {
             }
         }
 
+        svc.onLiveLatency = { [weak self] ping, jitter in
+            guard let self else { return }
+            self.currentPingMs   = ping
+            self.currentJitterMs = jitter
+        }
+
         svc.onComplete = { [weak self] result in
             guard let self else { return }
             self.service = nil
             switch result {
             case .success(let r):
-                self.unloadedPingMs      = r.unloadedPingMs
-                self.downloadMbps        = r.downloadMbps
+                self.unloadedPingMs       = r.unloadedPingMs
+                self.jitterMs             = r.jitterMs
+                self.downloadMbps         = r.downloadMbps
                 self.downloadLoadedPingMs = r.downloadLoadedPingMs
-                self.uploadMbps          = r.uploadMbps
-                self.uploadLoadedPingMs  = r.uploadLoadedPingMs
+                self.downloadJitterMs     = r.downloadJitterMs
+                self.uploadMbps           = r.uploadMbps
+                self.uploadLoadedPingMs   = r.uploadLoadedPingMs
+                self.uploadJitterMs       = r.uploadJitterMs
+                self.ispName              = r.ispName
+                self.history?.add(TestRecord(
+                    id: UUID(),
+                    date: Date(),
+                    downloadMbps: r.downloadMbps,
+                    uploadMbps: r.uploadMbps,
+                    pingMs: r.unloadedPingMs,
+                    jitterMs: r.jitterMs,
+                    ispName: r.ispName
+                ))
                 self.state = .done(r)
             case .failure(let err):
                 self.state = .failed(err.localizedDescription)
@@ -79,14 +106,19 @@ final class SpeedTestViewModel: ObservableObject {
     }
 
     private func resetValues() {
-        currentMbps       = 0
-        currentPingMs     = 0
-        progress          = 0
-        unloadedPingMs    = nil
-        downloadMbps      = nil
+        currentMbps          = 0
+        currentPingMs        = 0
+        currentJitterMs      = 0
+        progress             = 0
+        unloadedPingMs       = nil
+        jitterMs             = nil
+        downloadMbps         = nil
         downloadLoadedPingMs = nil
-        uploadMbps        = nil
-        uploadLoadedPingMs = nil
+        downloadJitterMs     = nil
+        uploadMbps           = nil
+        uploadLoadedPingMs   = nil
+        uploadJitterMs       = nil
+        ispName              = nil
     }
 
     var activePhase: TestPhase? {

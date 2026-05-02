@@ -8,23 +8,20 @@ struct SpeedGaugeView: View {
 
     var body: some View {
         ZStack {
-            // Track
+            // Track — full circle
             Circle()
-                .trim(from: 0.1, to: 0.9)
-                .stroke(Color.white.opacity(0.1), style: StrokeStyle(lineWidth: 16, lineCap: .round))
-                .rotationEffect(.degrees(135))
+                .stroke(Color.capBorder, style: StrokeStyle(lineWidth: 14, lineCap: .round))
 
-            // Active fill
+            // Fill — starts at bottom center (6 o'clock), sweeps clockwise
             Circle()
-                .trim(from: 0.1, to: fillEnd)
+                .trim(from: 0, to: fillEnd)
                 .stroke(
                     LinearGradient(colors: arcColors, startPoint: .leading, endPoint: .trailing),
-                    style: StrokeStyle(lineWidth: 16, lineCap: .round)
+                    style: StrokeStyle(lineWidth: 14, lineCap: .round)
                 )
-                .rotationEffect(.degrees(135))
+                .rotationEffect(.degrees(90))   // 0° is 3 o'clock; +90° moves start to 6 o'clock
                 .animation(.easeOut(duration: 0.25), value: fillEnd)
 
-            // Center content
             centerContent
         }
     }
@@ -35,13 +32,13 @@ struct SpeedGaugeView: View {
     private var centerContent: some View {
         switch vm.state {
         case .idle:
-            VStack(spacing: 4) {
-                Image(systemName: "wifi")
-                    .font(.system(size: 28, weight: .light))
-                    .foregroundStyle(.white.opacity(0.3))
-                Text("TAP TO TEST")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.3))
+            VStack(spacing: 6) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 26, weight: .regular))
+                    .foregroundStyle(Color.capAccent)
+                Text("TAP TO RUN")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.capMuted)
                     .tracking(2)
             }
 
@@ -50,45 +47,45 @@ struct SpeedGaugeView: View {
                 switch phase {
                 case .ping:
                     Text(String(format: "%.0f", vm.currentPingMs))
-                        .font(.system(size: 52, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
+                        .font(.system(size: 50, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.capText)
                         .contentTransition(.numericText())
                         .animation(.easeOut(duration: 0.2), value: vm.currentPingMs)
                     Text("ms")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.5))
-                    Text("Unloaded latency")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.white.opacity(0.3))
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(Color.capSub)
+                    Text("Latency")
+                        .font(.system(size: 10))
+                        .foregroundStyle(Color.capMuted)
                         .padding(.top, 2)
                 case .download, .upload:
                     Text(formatMbps(vm.currentMbps))
-                        .font(.system(size: 52, weight: .bold, design: .rounded))
-                        .foregroundStyle(.white)
+                        .font(.system(size: 50, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color.capText)
                         .contentTransition(.numericText())
                         .animation(.easeOut(duration: 0.2), value: vm.currentMbps)
                     Text("Mbps")
-                        .font(.system(size: 15, weight: .medium))
-                        .foregroundStyle(.white.opacity(0.5))
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(Color.capSub)
                 }
             }
 
         case .done(let result):
-            VStack(spacing: 2) {
+            VStack(spacing: 3) {
                 Text(formatMbps(result.downloadMbps))
-                    .font(.system(size: 48, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .font(.system(size: 46, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.capText)
                 Text("Mbps")
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(.white.opacity(0.5))
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color.capSub)
                 ResultBadge(mbps: result.downloadMbps)
                     .padding(.top, 6)
             }
 
         case .failed:
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 36))
-                .foregroundStyle(.orange)
+            Image(systemName: "exclamationmark.triangle")
+                .font(.system(size: 32, weight: .light))
+                .foregroundStyle(Color(red: 0.80, green: 0.32, blue: 0.10))
         }
     }
 
@@ -97,22 +94,22 @@ struct SpeedGaugeView: View {
     private var fillEnd: CGFloat {
         switch vm.state {
         case .idle, .failed:
-            return 0.1
-        case .running(let phase):
-            let ratio: Double = phase == .ping
-                ? min(vm.currentPingMs / 300, 1)
-                : min(vm.currentMbps / maxMbps, 1)
-            return 0.1 + 0.8 * ratio
-        case .done(let r):
-            return 0.1 + 0.8 * min(r.downloadMbps / maxMbps, 1)
+            return 0
+        case .running:
+            return vm.progress
+        case .done:
+            return 1
         }
     }
 
     private var arcColors: [Color] {
+        if case .done = vm.state {
+            return [Color.capAccent, Color.capAccent]
+        }
         switch vm.activePhase {
-        case .ping:     return [.yellow, .orange]
-        case .upload:   return [.purple, .indigo]
-        default:        return [.cyan, .blue, .indigo]
+        case .ping:   return [Color.capAmber, Color(red: 0.95, green: 0.48, blue: 0.05)]
+        case .upload: return [Color(red: 0.36, green: 0.33, blue: 0.33), Color.capDark]
+        default:      return [Color.capAccent, Color(red: 0.00, green: 0.58, blue: 0.58)]
         }
     }
 
