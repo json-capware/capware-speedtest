@@ -15,6 +15,7 @@ struct RootView: View {
     @ObservedObject var history: HistoryStore
     @StateObject private var vm: SpeedTestViewModel
     @State private var selectedTab = 0
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     init(history: HistoryStore) {
         self.history = history
@@ -23,9 +24,14 @@ struct RootView: View {
 
     var body: some View {
         GeometryReader { geo in
-            let contentWidth = min(geo.size.width, geo.size.height)
+            // iPhone landscape has compact vertical size class — use full width there.
+            // iPad landscape keeps both classes regular — cap content to portrait width.
+            let isIPhoneLandscape = verticalSizeClass == .compact
+            let contentWidth: CGFloat = isIPhoneLandscape
+                ? geo.size.width
+                : min(geo.size.width, geo.size.height)
+
             VStack(spacing: 0) {
-                // Full-bleed surface behind width-capped content
                 ZStack {
                     Color.capSurface.ignoresSafeArea()
                     ZStack {
@@ -42,6 +48,7 @@ struct RootView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .ignoresSafeArea(edges: .bottom)
         }
+        .ignoresSafeArea()
     }
 }
 
