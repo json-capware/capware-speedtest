@@ -3,6 +3,8 @@ import SwiftUI
 struct SpeedGaugeView: View {
 
     @ObservedObject var vm: SpeedTestViewModel
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var s: CGFloat { sizeClass == .regular ? 1.25 : 1.0 }
 
     private let maxMbps: Double = 1000
 
@@ -34,10 +36,10 @@ struct SpeedGaugeView: View {
         case .idle:
             VStack(spacing: 6) {
                 Image(systemName: "play.fill")
-                    .font(.system(size: 26, weight: .regular))
+                    .font(.system(size: 26 * s, weight: .regular))
                     .foregroundStyle(Color.capAccent)
                 Text("TAP TO RUN")
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 10 * s, weight: .semibold))
                     .foregroundStyle(Color.capMuted)
                     .tracking(2)
             }
@@ -47,25 +49,25 @@ struct SpeedGaugeView: View {
                 switch phase {
                 case .ping:
                     Text(String(format: "%.0f", vm.currentPingMs))
-                        .font(.system(size: 50, weight: .bold, design: .rounded))
+                        .font(.system(size: 50 * s, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.capText)
                         .contentTransition(.numericText())
                         .animation(.easeOut(duration: 0.2), value: vm.currentPingMs)
                     Text("ms")
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.system(size: 14 * s, weight: .medium))
                         .foregroundStyle(Color.capSub)
                     Text("Latency")
-                        .font(.system(size: 10))
+                        .font(.system(size: 10 * s))
                         .foregroundStyle(Color.capMuted)
                         .padding(.top, 2)
                 case .download, .upload:
                     Text(formatMbps(vm.currentMbps))
-                        .font(.system(size: 50, weight: .bold, design: .rounded))
+                        .font(.system(size: 50 * s, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.capText)
                         .contentTransition(.numericText())
                         .animation(.easeOut(duration: 0.2), value: vm.currentMbps)
                     Text("Mbps")
-                        .font(.system(size: 14, weight: .medium))
+                        .font(.system(size: 14 * s, weight: .medium))
                         .foregroundStyle(Color.capSub)
                 }
             }
@@ -73,10 +75,10 @@ struct SpeedGaugeView: View {
         case .done(let result):
             VStack(spacing: 3) {
                 Text(formatMbps(result.downloadMbps))
-                    .font(.system(size: 46, weight: .bold, design: .rounded))
+                    .font(.system(size: 46 * s, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.capText)
                 Text("Mbps")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 13 * s, weight: .medium))
                     .foregroundStyle(Color.capSub)
                 ResultBadge(mbps: result.downloadMbps)
                     .padding(.top, 6)
@@ -84,7 +86,7 @@ struct SpeedGaugeView: View {
 
         case .failed:
             Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 32, weight: .light))
+                .font(.system(size: 32 * s, weight: .light))
                 .foregroundStyle(Color(red: 0.80, green: 0.32, blue: 0.10))
         }
     }

@@ -19,15 +19,22 @@ extension Color {
 struct ContentView: View {
 
     @ObservedObject var vm: SpeedTestViewModel
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isIPad: Bool { sizeClass == .regular }
+    private var fScale: CGFloat { isIPad ? 1.25 : 1.0 }
+    private var gaugeSize: CGFloat { isIPad ? 320 : 264 }
 
     var body: some View {
         VStack(spacing: 0) {
+            Spacer()
+
             header
-                .padding(.top, 56)
+                .padding(.top, isIPad ? 0 : 56)
                 .padding(.bottom, 16)
 
             gaugeButton
-                .frame(width: 264, height: 264)
+                .frame(width: gaugeSize, height: gaugeSize)
 
             Spacer().frame(height: 16)
 
@@ -61,11 +68,11 @@ struct ContentView: View {
     private var header: some View {
         VStack(spacing: 3) {
             Text("Pulse Internet Speed Test")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .font(.system(size: 20 * fScale, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.capText)
             if let isp = vm.ispName {
                 Text(isp)
-                    .font(.system(size: 11, weight: .medium))
+                    .font(.system(size: 11 * fScale, weight: .medium))
                     .foregroundStyle(Color.capSub)
                     .transition(.opacity)
             }
@@ -88,7 +95,7 @@ struct ContentView: View {
         switch vm.state {
         case .idle:
             Text("Tap the gauge to start")
-                .font(.system(size: 13))
+                .font(.system(size: 13 * fScale))
                 .foregroundStyle(Color.capMuted)
                 .frame(maxWidth: .infinity, alignment: .center)
 
@@ -96,7 +103,7 @@ struct ContentView: View {
             HStack(alignment: .center) {
                 VStack(alignment: .leading, spacing: 3) {
                     Text(phaseLabel(phase))
-                        .font(.system(size: 13, weight: .medium))
+                        .font(.system(size: 13 * fScale, weight: .medium))
                         .foregroundStyle(Color.capSub)
                     if phase == .download || phase == .upload {
                         HStack(spacing: 10) {
@@ -105,13 +112,13 @@ struct ContentView: View {
                             Text(String(format: "±%.0f ms", vm.currentJitterMs))
                                 .foregroundStyle(Color.capMuted)
                         }
-                        .font(.system(size: 11, weight: .medium, design: .rounded))
+                        .font(.system(size: 11 * fScale, weight: .medium, design: .rounded))
                         .contentTransition(.numericText())
                     }
                 }
                 Spacer()
                 Button("Cancel") { vm.reset() }
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 13 * fScale, weight: .medium))
                     .foregroundStyle(Color.capSub)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 7)
@@ -123,11 +130,11 @@ struct ContentView: View {
         case .done:
             HStack {
                 Label("Test complete", systemImage: "checkmark.circle.fill")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.system(size: 13 * fScale, weight: .medium))
                     .foregroundStyle(Color(red: 0.12, green: 0.41, blue: 0.22))
                 Spacer()
                 Button("Run Again") { vm.reset() }
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 13 * fScale, weight: .semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 7)
@@ -138,11 +145,11 @@ struct ContentView: View {
         case .failed(let msg):
             HStack {
                 Text(msg)
-                    .font(.system(size: 12))
+                    .font(.system(size: 12 * fScale))
                     .foregroundStyle(Color(red: 0.41, green: 0.12, blue: 0.12))
                 Spacer()
                 Button("Try Again") { vm.reset() }
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(size: 13 * fScale, weight: .semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 7)
@@ -210,9 +217,9 @@ struct ContentView: View {
     private func sectionHeader(_ title: String, systemImage: String) -> some View {
         HStack(spacing: 5) {
             Image(systemName: systemImage)
-                .font(.system(size: 9, weight: .semibold))
+                .font(.system(size: 9 * fScale, weight: .semibold))
             Text(title)
-                .font(.system(size: 9, weight: .semibold))
+                .font(.system(size: 9 * fScale, weight: .semibold))
                 .tracking(1.2)
         }
         .foregroundStyle(Color.capMuted)
@@ -272,15 +279,17 @@ struct MetricTile: View {
     let value: String?
     let isActive: Bool
     let liveValue: String?
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var s: CGFloat { sizeClass == .regular ? 1.25 : 1.0 }
 
     var body: some View {
         VStack(spacing: 10) {
             Image(systemName: icon)
-                .font(.system(size: 20))
+                .font(.system(size: 20 * s))
                 .foregroundStyle(isActive ? color : Color.capMuted)
 
             Text(label)
-                .font(.system(size: 9, weight: .semibold))
+                .font(.system(size: 9 * s, weight: .semibold))
                 .foregroundStyle(Color.capMuted)
                 .tracking(1.5)
 
@@ -297,7 +306,7 @@ struct MetricTile: View {
                         .foregroundStyle(Color.capMuted)
                 }
             }
-            .font(.system(size: 17, weight: .semibold, design: .rounded))
+            .font(.system(size: 17 * s, weight: .semibold, design: .rounded))
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 20)
@@ -316,20 +325,22 @@ struct MetricTile: View {
 struct LatencyCell: View {
     let label: String
     let ms: Double?
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var s: CGFloat { sizeClass == .regular ? 1.25 : 1.0 }
 
     var body: some View {
         VStack(spacing: 4) {
             Text(label)
-                .font(.system(size: 9, weight: .semibold))
+                .font(.system(size: 9 * s, weight: .semibold))
                 .foregroundStyle(Color.capMuted)
                 .tracking(0.8)
             if let ms {
                 Text(String(format: "%.0f ms", ms))
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .font(.system(size: 14 * s, weight: .semibold, design: .rounded))
                     .foregroundStyle(latencyColor(ms))
             } else {
                 Text("—")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: 14 * s, weight: .semibold))
                     .foregroundStyle(Color.capMuted)
             }
         }

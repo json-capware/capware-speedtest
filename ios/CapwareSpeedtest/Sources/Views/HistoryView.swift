@@ -2,6 +2,8 @@ import SwiftUI
 
 struct HistoryView: View {
     @ObservedObject var history: HistoryStore
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var s: CGFloat { sizeClass == .regular ? 1.25 : 1.0 }
 
     private let dateFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -49,7 +51,7 @@ struct HistoryView: View {
     private var header: some View {
         VStack(spacing: 4) {
             Text("History")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .font(.system(size: 20 * s, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.capText)
         }
         .padding(.bottom, 8)

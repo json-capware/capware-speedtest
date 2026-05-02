@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var history: HistoryStore
     @State private var showConfirm = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    private var s: CGFloat { sizeClass == .regular ? 1.25 : 1.0 }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -48,7 +50,7 @@ struct SettingsView: View {
     private var header: some View {
         VStack(spacing: 4) {
             Text("Settings")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .font(.system(size: 20 * s, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.capText)
         }
     }
