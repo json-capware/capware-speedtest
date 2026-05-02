@@ -22,18 +22,26 @@ struct RootView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            // Content area — fully bounded, never overlaps tab bar
-            ZStack {
-                ContentView(vm: vm).opacity(selectedTab == 0 ? 1 : 0)
-                HistoryView(history: history).opacity(selectedTab == 1 ? 1 : 0)
-                SettingsView(history: history).opacity(selectedTab == 2 ? 1 : 0)
+        GeometryReader { geo in
+            let contentWidth = min(geo.size.width, geo.size.height)
+            VStack(spacing: 0) {
+                // Full-bleed surface behind width-capped content
+                ZStack {
+                    Color.capSurface.ignoresSafeArea()
+                    ZStack {
+                        ContentView(vm: vm).opacity(selectedTab == 0 ? 1 : 0)
+                        HistoryView(history: history).opacity(selectedTab == 1 ? 1 : 0)
+                        SettingsView(history: history).opacity(selectedTab == 2 ? 1 : 0)
+                    }
+                    .frame(maxWidth: contentWidth, maxHeight: .infinity)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                AppTabBar(selectedTab: $selectedTab, contentWidth: contentWidth)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-            AppTabBar(selectedTab: $selectedTab)
+            .ignoresSafeArea(edges: .bottom)
         }
-        .ignoresSafeArea(edges: .bottom)
     }
 }
 
@@ -41,6 +49,7 @@ struct RootView: View {
 
 struct AppTabBar: View {
     @Binding var selectedTab: Int
+    let contentWidth: CGFloat
 
     private let items: [(label: String, icon: String)] = [
         ("Test",     "gauge.with.dots.needle.67percent"),
@@ -68,6 +77,8 @@ struct AppTabBar: View {
                 .buttonStyle(.plain)
             }
         }
+        .frame(maxWidth: contentWidth)   // cap buttons to portrait width
+        .frame(maxWidth: .infinity)      // center within full-bleed bar
         .background(
             Color.capCard
                 .shadow(color: .black.opacity(0.06), radius: 8, y: -2)
