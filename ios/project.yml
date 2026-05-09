@@ -39,6 +39,9 @@ targets:
     deploymentTarget: "10.0"
     sources:
       - path: PulseWatch/Sources
+      # Shared with iOS — pure Foundation, compiles on watchOS unchanged
+      - path: CapwareSpeedtest/Sources/Services/SpeedTestService.swift
+      - path: CapwareSpeedtest/Sources/Models/TestRecord.swift
     resources:
       - path: PulseWatch/Resources
     settings:

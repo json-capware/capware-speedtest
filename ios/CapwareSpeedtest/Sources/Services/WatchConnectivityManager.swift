@@ -1,16 +1,15 @@
 import Foundation
 import WatchConnectivity
 
-/// Bridges the Apple Watch ↔ iPhone for Pulse speed tests.
-/// - Watch sends `["action": "runTest"]`  → triggers `onTestRequest`
-/// - iOS calls `sendResults(...)` when the test finishes → watch displays results
+/// Receives speed-test results from the Apple Watch and saves them to the phone's history.
+/// The watch runs its own test and ships results via transferUserInfo (no app open needed).
 @MainActor
 final class WatchConnectivityManager: NSObject, ObservableObject {
 
     static let shared = WatchConnectivityManager()
 
-    /// Called on the main actor when the watch requests a test.
-    var onTestRequest: (() -> Void)?
+    /// Set by CapwareSpeedtestApp to save incoming watch results.
+    var onWatchResult: ((TestRecord) -> Void)?
 
     private override init() {
         super.init()
@@ -18,44 +17,49 @@ final class WatchConnectivityManager: NSObject, ObservableObject {
         WCSession.default.delegate = self
         WCSession.default.activate()
     }
-
-    func sendResults(download: Double, upload: Double, ping: Double, jitter: Double) {
-        guard WCSession.default.activationState == .activated,
-              WCSession.default.isReachable else { return }
-        WCSession.default.sendMessage(
-            ["download": download, "upload": upload, "ping": ping, "jitter": jitter],
-            replyHandler: nil,
-            errorHandler: nil
-        )
-    }
-
-    func sendError(_ message: String) {
-        guard WCSession.default.activationState == .activated,
-              WCSession.default.isReachable else { return }
-        WCSession.default.sendMessage(["error": message], replyHandler: nil, errorHandler: nil)
-    }
 }
 
 // MARK: - WCSessionDelegate
 
 extension WatchConnectivityManager: WCSessionDelegate {
-    nonisolated func session(
-        _ session: WCSession,
-        activationDidCompleteWith state: WCSessionActivationState,
-        error: Error?
-    ) {}
+    nonisolated func session(_ session: WCSession,
+                             activationDidCompleteWith state: WCSessionActivationState,
+                             error: Error?) {}
 
     nonisolated func sessionDidBecomeInactive(_ session: WCSession) {}
 
     nonisolated func sessionDidDeactivate(_ session: WCSession) {
-        // Re-activate on paired watch swap
         WCSession.default.activate()
     }
 
-    nonisolated func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        guard message["action"] as? String == "runTest" else { return }
+    /// Receives queued test results from the Watch (delivered via transferUserInfo).
+    nonisolated func session(_ session: WCSession,
+                             didReceiveUserInfo userInfo: [String: Any]) {
+        guard
+            userInfo["source"] as? String == "watch",
+            let idStr    = userInfo["id"]       as? String,
+            let id       = UUID(uuidString: idStr),
+            let ts       = userInfo["date"]     as? TimeInterval,
+            let download = userInfo["download"] as? Double,
+            let upload   = userInfo["upload"]   as? Double,
+            let ping     = userInfo["ping"]     as? Double,
+            let jitter   = userInfo["jitter"]   as? Double
+        else { return }
+
+        let isp = (userInfo["isp"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        let record = TestRecord(
+            id:           id,
+            date:         Date(timeIntervalSince1970: ts),
+            downloadMbps: download,
+            uploadMbps:   upload,
+            pingMs:       ping,
+            jitterMs:     jitter,
+            ispName:      isp,
+            source:       .watch
+        )
+
         Task { @MainActor in
-            self.onTestRequest?()
+            self.onWatchResult?(record)
         }
     }
 }

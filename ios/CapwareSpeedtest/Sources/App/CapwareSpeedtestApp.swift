@@ -57,22 +57,9 @@ struct RootView: View {
     // MARK: - Watch connectivity
 
     private func configureWatch() {
-        let watch = WatchConnectivityManager.shared
-
-        // Watch taps Test → run the speed test on iPhone
-        watch.onTestRequest = { [weak vm] in
-            guard let vm, case .idle = vm.state else { return }
-            vm.run()
-        }
-
-        // Speed test finished → push summary to Watch
-        vm.onTestComplete = { result in
-            watch.sendResults(
-                download: result.downloadMbps,
-                upload:   result.uploadMbps,
-                ping:     result.unloadedPingMs,
-                jitter:   result.jitterMs
-            )
+        // Watch runs its own test; phone just receives the result and saves to history
+        WatchConnectivityManager.shared.onWatchResult = { [weak history] record in
+            history?.add(record)
         }
     }
 }

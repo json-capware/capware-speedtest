@@ -145,9 +145,16 @@ struct HistoryRow: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(formatter.string(from: record.date))
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(Color.capText)
+                HStack(spacing: 4) {
+                    Text(formatter.string(from: record.date))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(Color.capText)
+                    if record.source == .watch {
+                        Image(systemName: "applewatch")
+                            .font(.system(size: 10))
+                            .foregroundStyle(Color.capMuted)
+                    }
+                }
                 if let isp = record.ispName {
                     Text(isp)
                         .font(.system(size: 11))

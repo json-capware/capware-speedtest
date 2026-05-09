@@ -33,19 +33,19 @@ struct ContentView: View {
         switch session.phase {
         case .idle:
             GaugeRing(fill: 0, colors: [.capAccent, .capAccent]) {
-                Button { session.requestTest() } label: {
+                Button { session.startTest() } label: {
                     idleCenter
                 }
                 .buttonStyle(.plain)
             }
 
-        case .testing:
-            SpinningGauge()
+        case .testing(let label, let currentValue, let progress):
+            GaugeRing(fill: progress, colors: [.capAccent, Color(red: 0.00, green: 0.58, blue: 0.58)]) {
+                testingCenter(label: label, value: currentValue)
+            }
 
         case .done(let dl, let ul, let ping, let jitter):
-            GaugeRing(fill: 1, colors: [.capAccent, .capAccent]) {
-                resultsCenter(dl: dl, ul: ul, ping: ping, jitter: jitter)
-            }
+            resultsView(dl: dl, ul: ul, ping: ping, jitter: jitter)
 
         case .failed(let msg):
             GaugeRing(fill: 0, colors: [.capAccent, .capAccent]) {
@@ -68,27 +68,44 @@ struct ContentView: View {
         }
     }
 
-    private func resultsCenter(dl: Double, ul: Double, ping: Double, jitter: Double) -> some View {
+    private func testingCenter(label: String, value: Double) -> some View {
+        VStack(spacing: 2) {
+            Text(label == "Measuring latency"
+                 ? (value > 0 ? String(format: "%.0f", value) : "—")
+                 : formatMbps(value))
+                .font(.system(size: 26, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.capText)
+                .contentTransition(.numericText())
+            Text(label == "Measuring latency" ? "ms" : "Mbps")
+                .font(.system(size: 10, weight: .medium))
+                .foregroundStyle(Color.capSub)
+            Text(label)
+                .font(.system(size: 8))
+                .foregroundStyle(Color.capMuted)
+                .padding(.top, 1)
+        }
+    }
+
+    private func resultsView(dl: Double, ul: Double, ping: Double, jitter: Double) -> some View {
         ScrollView {
-            VStack(spacing: 2) {
-                // Primary: download speed large
+            VStack(spacing: 4) {
                 VStack(spacing: 1) {
                     Text(formatMbps(dl))
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
                         .foregroundStyle(Color.capText)
-                    Text("Mbps ↓")
+                    Text("Mbps  ↓")
                         .font(.system(size: 9, weight: .medium))
                         .foregroundStyle(Color.capSub)
                 }
-                .padding(.top, 4)
+                .padding(.top, 6)
 
-                Divider().padding(.horizontal, 16).padding(.vertical, 4)
+                Divider().padding(.horizontal, 14).padding(.vertical, 2)
 
-                WatchStatRow(label: "Upload", value: formatMbps(ul))
+                WatchStatRow(label: "Upload", value: formatMbps(ul) + " ↑")
                 WatchStatRow(label: "Ping",   value: String(format: "%.0f ms", ping))
                 WatchStatRow(label: "Jitter", value: String(format: "%.0f ms", jitter))
 
-                Button("Again") { session.reset() }
+                Button("Test Again") { session.reset() }
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(Color.capAccent)
                     .padding(.top, 6)
@@ -150,40 +167,6 @@ private struct GaugeRing<Center: View>: View {
             center()
         }
         .padding(14)
-    }
-}
-
-// MARK: - SpinningGauge
-
-/// Indeterminate spinning arc shown while the iPhone runs the test.
-private struct SpinningGauge: View {
-    @State private var rotation: Double = 0
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(Color.capBorder, style: StrokeStyle(lineWidth: 14, lineCap: .round))
-
-            Circle()
-                .trim(from: 0, to: 0.25)
-                .stroke(Color.capAccent, style: StrokeStyle(lineWidth: 14, lineCap: .round))
-                .rotationEffect(.degrees(rotation))
-
-            VStack(spacing: 5) {
-                Text("Testing…")
-                    .font(.system(size: 11, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color.capText)
-                Text("on iPhone")
-                    .font(.system(size: 9))
-                    .foregroundStyle(Color.capMuted)
-            }
-        }
-        .padding(14)
-        .onAppear {
-            withAnimation(.linear(duration: 1.1).repeatForever(autoreverses: false)) {
-                rotation = 360
-            }
-        }
     }
 }
 
