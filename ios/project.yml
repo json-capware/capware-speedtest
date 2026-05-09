@@ -50,6 +50,8 @@ targets:
       - path: CapwareSpeedtest/Sources/Services/SpeedTestService.swift
       - path: CapwareSpeedtest/Sources/Models/TestRecord.swift
       - path: Shared/DesignTokens.swift
+      - path: PulseWatch/Resources/WatchIcons
+        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: co.capware.speedtest.watchkitapp
