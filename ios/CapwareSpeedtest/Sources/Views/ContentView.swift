@@ -1,18 +1,6 @@
 import SwiftUI
 
-// MARK: - Design tokens
-
-extension Color {
-    static let capSurface = Color(red: 0.98, green: 0.98, blue: 0.98)   // #fafafa
-    static let capCard    = Color.white
-    static let capBorder  = Color(red: 0.91, green: 0.89, blue: 0.89)   // #e7e4e4
-    static let capText    = Color(red: 0.16, green: 0.14, blue: 0.14)   // #282424
-    static let capSub     = Color(red: 0.47, green: 0.43, blue: 0.43)   // #786d6d
-    static let capMuted   = Color(red: 0.71, green: 0.69, blue: 0.69)   // #b6afaf
-    static let capAccent  = Color(red: 0.00, green: 0.81, blue: 0.81)   // #00cece ≈ brand cyan
-    static let capAmber   = Color(red: 0.97, green: 0.65, blue: 0.12)   // ping color
-    static let capDark    = Color(red: 0.10, green: 0.09, blue: 0.09)   // upload color
-}
+// Colours live in Shared/DesignTokens.swift
 
 // MARK: - ContentView
 

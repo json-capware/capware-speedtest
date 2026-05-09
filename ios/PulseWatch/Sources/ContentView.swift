@@ -1,16 +1,6 @@
 import SwiftUI
 
-// MARK: - Design tokens (mirrored from iOS app)
-
-private extension Color {
-    static let capSurface = Color(red: 0.98, green: 0.98, blue: 0.98)
-    static let capBorder  = Color(red: 0.91, green: 0.89, blue: 0.89)
-    static let capText    = Color(red: 0.16, green: 0.14, blue: 0.14)
-    static let capSub     = Color(red: 0.47, green: 0.43, blue: 0.43)
-    static let capMuted   = Color(red: 0.71, green: 0.69, blue: 0.69)
-    static let capAccent  = Color(red: 0.00, green: 0.81, blue: 0.81)
-    static let capAmber   = Color(red: 0.97, green: 0.65, blue: 0.12)
-}
+// Colours live in Shared/DesignTokens.swift
 
 // MARK: - ContentView
 
@@ -26,21 +16,22 @@ struct ContentView: View {
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
 
-    // MARK: - Gauge
+    // MARK: - Gauge switcher
 
     @ViewBuilder
     private var gauge: some View {
         switch session.phase {
         case .idle:
             GaugeRing(fill: 0, colors: [.capAccent, .capAccent]) {
-                Button { session.startTest() } label: {
-                    idleCenter
-                }
-                .buttonStyle(.plain)
+                Button { session.startTest() } label: { idleCenter }
+                    .buttonStyle(.plain)
             }
 
         case .testing(let label, let currentValue, let progress):
-            GaugeRing(fill: progress, colors: [.capAccent, Color(red: 0.00, green: 0.58, blue: 0.58)]) {
+            GaugeRing(
+                fill: progress,
+                colors: [.capAccent, Color(red: 0.00, green: 0.58, blue: 0.58)]
+            ) {
                 testingCenter(label: label, value: currentValue)
             }
 
@@ -54,29 +45,32 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Center content
+    // MARK: - Idle center  (matches iOS SpeedGaugeView exactly)
 
     private var idleCenter: some View {
-        VStack(spacing: 5) {
+        VStack(spacing: 6) {
             Image(systemName: "play.fill")
                 .font(.system(size: 22, weight: .regular))
                 .foregroundStyle(Color.capAccent)
             Text("TAP TO RUN")
-                .font(.system(size: 8, weight: .semibold))
+                .font(.system(size: 9, weight: .semibold))
                 .foregroundStyle(Color.capMuted)
-                .tracking(1.5)
+                .tracking(2)
         }
     }
 
+    // MARK: - Testing center  (live speed in gauge, matches iOS)
+
     private func testingCenter(label: String, value: Double) -> some View {
-        VStack(spacing: 2) {
-            Text(label == "Measuring latency"
+        let isPing = label == "Measuring latency"
+        return VStack(spacing: 2) {
+            Text(isPing
                  ? (value > 0 ? String(format: "%.0f", value) : "—")
                  : formatMbps(value))
                 .font(.system(size: 26, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.capText)
                 .contentTransition(.numericText())
-            Text(label == "Measuring latency" ? "ms" : "Mbps")
+            Text(isPing ? "ms" : "Mbps")
                 .font(.system(size: 10, weight: .medium))
                 .foregroundStyle(Color.capSub)
             Text(label)
@@ -85,6 +79,8 @@ struct ContentView: View {
                 .padding(.top, 1)
         }
     }
+
+    // MARK: - Results (scrollable, crown-navigable)
 
     private func resultsView(dl: Double, ul: Double, ping: Double, jitter: Double) -> some View {
         ScrollView {
@@ -97,9 +93,11 @@ struct ContentView: View {
                         .font(.system(size: 9, weight: .medium))
                         .foregroundStyle(Color.capSub)
                 }
-                .padding(.top, 6)
+                .padding(.top, 8)
 
-                Divider().padding(.horizontal, 14).padding(.vertical, 2)
+                Color.capBorder.frame(height: 1)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 3)
 
                 WatchStatRow(label: "Upload", value: formatMbps(ul) + " ↑")
                 WatchStatRow(label: "Ping",   value: String(format: "%.0f ms", ping))
@@ -111,9 +109,12 @@ struct ContentView: View {
                     .padding(.top, 6)
                     .padding(.bottom, 4)
             }
+            .frame(maxWidth: .infinity)
         }
         .focusable()
     }
+
+    // MARK: - Failed center
 
     private func failedCenter(_ msg: String) -> some View {
         VStack(spacing: 6) {
@@ -137,36 +138,45 @@ struct ContentView: View {
 }
 
 // MARK: - GaugeRing
+// Replicates the iOS SpeedGaugeView ring exactly:
+//   • capBorder track at 14 pt, round linecap
+//   • Gradient fill arc from 6 o'clock sweeping clockwise
+//   • GeometryReader centres the circle within whatever space is available
 
-/// Reusable gauge ring with a static arc fill and arbitrary center content.
 private struct GaugeRing<Center: View>: View {
     let fill: CGFloat
     let colors: [Color]
     @ViewBuilder let center: () -> Center
 
     var body: some View {
-        ZStack {
-            // Track
-            Circle()
-                .stroke(
-                    Color.capBorder,
-                    style: StrokeStyle(lineWidth: 14, lineCap: .round)
-                )
-
-            // Fill arc
-            if fill > 0 {
+        GeometryReader { geo in
+            let diameter = min(geo.size.width, geo.size.height) - 28   // 14 pt inset each side
+            ZStack {
+                // Track — full circle, same as iOS
                 Circle()
-                    .trim(from: 0, to: fill)
-                    .stroke(
-                        LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing),
-                        style: StrokeStyle(lineWidth: 14, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(90))
-            }
+                    .stroke(Color.capBorder,
+                            style: StrokeStyle(lineWidth: 14, lineCap: .round))
 
-            center()
+                // Fill arc — starts at 6 o'clock, sweeps clockwise
+                if fill > 0 {
+                    Circle()
+                        .trim(from: 0, to: fill)
+                        .stroke(
+                            LinearGradient(colors: colors,
+                                           startPoint: .leading,
+                                           endPoint: .trailing),
+                            style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(90))
+                        .animation(.easeOut(duration: 0.25), value: fill)
+                }
+
+                center()
+            }
+            .frame(width: diameter, height: diameter)
+            // Centre the fixed-size circle within the full available space
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding(14)
     }
 }
 

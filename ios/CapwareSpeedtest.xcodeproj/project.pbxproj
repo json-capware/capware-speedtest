@@ -22,11 +22,13 @@
 		A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FAC720011799EF1F3701063 /* Assets.xcassets */; };
 		BB7BD75E7C5E46E0CF8111E7 /* SpeedTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9835901855368004CFD6A5 /* SpeedTestService.swift */; };
 		BE5B481BD12370CF9E990DFE /* CapwareSpeedtestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6CF76B29EDD0D8100A9E84 /* CapwareSpeedtestApp.swift */; };
+		C25E185E96870D0594D4526A /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2FDD164E4533A357020879 /* DesignTokens.swift */; };
 		C62E8BFE0E748DFBE57122C8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0328095AFDA7261B5406890 /* ContentView.swift */; };
 		CDC0EDE23D6724B2DA4138EB /* SpeedTestViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24772561FAB2C28E22A69703 /* SpeedTestViewModel.swift */; };
 		D878ACEDD8712DB7C625E67B /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F532A28331349632A5E5490D /* WatchConnectivity.framework */; };
 		E0008F4B5EC0B5E6E7B045AC /* PulseWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A237595CC70BF47AAE69421A /* PulseWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E54071E29B47DF5B38B52385 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1D754FF8C0CA4AED6F40DE0 /* ContentView.swift */; };
+		FDDDE69E4CEB0CC9E137BE92 /* DesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2FDD164E4533A357020879 /* DesignTokens.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,7 @@
 		5EC174D7E22DCB6340CF2B7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		673E09EC4FBBE1EDBAE15F2A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		7FAC720011799EF1F3701063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8A2FDD164E4533A357020879 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		A237595CC70BF47AAE69421A /* PulseWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE000198B43279B75838C83 /* SpeedGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedGaugeView.swift; sourceTree = "<group>"; };
 		D0328095AFDA7261B5406890 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -101,6 +104,14 @@
 				F532A28331349632A5E5490D /* WatchConnectivity.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0E98ECE98AF9FFAAC39C9BE2 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				8A2FDD164E4533A357020879 /* DesignTokens.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 		531029744BE7AAB845CC811A /* Sources */ = {
@@ -148,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				5CD94B941790980A94EF6C91 /* Resources */,
+				0E98ECE98AF9FFAAC39C9BE2 /* Shared */,
 				531029744BE7AAB845CC811A /* Sources */,
 				B4094FADD9036E5B7C5475B0 /* Sources */,
 				0536D3188CD08654389CE4B9 /* Frameworks */,
@@ -299,6 +311,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E54071E29B47DF5B38B52385 /* ContentView.swift in Sources */,
+				FDDDE69E4CEB0CC9E137BE92 /* DesignTokens.swift in Sources */,
 				91C77B5ECE35D429687B1BAC /* PulseWatchApp.swift in Sources */,
 				BB7BD75E7C5E46E0CF8111E7 /* SpeedTestService.swift in Sources */,
 				50845F29CC4C95575267E49D /* TestRecord.swift in Sources */,
@@ -312,6 +325,7 @@
 			files = (
 				BE5B481BD12370CF9E990DFE /* CapwareSpeedtestApp.swift in Sources */,
 				C62E8BFE0E748DFBE57122C8 /* ContentView.swift in Sources */,
+				C25E185E96870D0594D4526A /* DesignTokens.swift in Sources */,
 				1B63BDD6D9691DF2AE29AEF3 /* HistoryStore.swift in Sources */,
 				1342C8667D7E347C6CA901D5 /* HistoryView.swift in Sources */,
 				3CA53514C76F16185DE22130 /* ResultBadge.swift in Sources */,

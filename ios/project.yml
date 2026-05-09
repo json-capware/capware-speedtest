@@ -23,6 +23,7 @@ targets:
     sources:
       - path: CapwareSpeedtest/Sources
       - path: CapwareSpeedtest/Resources
+      - path: Shared
     settings:
       base:
         INFOPLIST_FILE: CapwareSpeedtest/Resources/Info.plist
@@ -42,6 +43,7 @@ targets:
       # Shared with iOS — pure Foundation, compiles on watchOS unchanged
       - path: CapwareSpeedtest/Sources/Services/SpeedTestService.swift
       - path: CapwareSpeedtest/Sources/Models/TestRecord.swift
+      - path: Shared/DesignTokens.swift
     resources:
       - path: PulseWatch/Resources
     settings:
