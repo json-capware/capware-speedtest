@@ -37,21 +37,19 @@ final class WatchSessionManager: NSObject, ObservableObject {
     }
 
     func requestTest() {
-        guard WCSession.default.activationState == .activated else {
-            phase = .failed("Watch session not ready")
-            return
-        }
-        guard WCSession.default.isReachable else {
-            phase = .failed("iPhone not reachable")
-            return
-        }
         phase = .testing
         WCSession.default.sendMessage(
             ["action": "runTest"],
             replyHandler: nil
-        ) { [weak self] _ in
+        ) { [weak self] error in
             Task { @MainActor in
-                self?.phase = .failed("Couldn't reach iPhone")
+                let code = (error as NSError).code
+                switch code {
+                case 7004, 7005, 7006:  // notReachable / sessionNotActivated / sessionInactive
+                    self?.phase = .failed("Open Pulse on iPhone first")
+                default:
+                    self?.phase = .failed("Couldn't reach iPhone")
+                }
             }
         }
     }
