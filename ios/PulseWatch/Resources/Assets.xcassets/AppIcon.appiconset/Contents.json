@@ -1,66 +1,11 @@
 {
   "images" : [
     {
-      "idiom" : "watch",
-      "role" : "appLauncher",
-      "scale" : "2x",
-      "size" : "24x24",
-      "filename" : "icon_w48.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "appLauncher",
-      "scale" : "2x",
-      "size" : "27.5x27.5",
-      "filename" : "icon_w55.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "appLauncher",
-      "scale" : "2x",
-      "size" : "29x29",
-      "filename" : "icon_w58.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "appLauncher",
-      "scale" : "2x",
-      "size" : "40x40",
-      "filename" : "icon_w80.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "appLauncher",
-      "scale" : "2x",
-      "size" : "44x44",
-      "filename" : "icon_w88.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "appLauncher",
-      "scale" : "2x",
-      "size" : "50x50",
-      "filename" : "icon_w100.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "companionSettings",
-      "scale" : "2x",
-      "size" : "29x29",
-      "filename" : "icon_w58.png"
-    },
-    {
-      "idiom" : "watch",
-      "role" : "companionSettings",
-      "scale" : "3x",
-      "size" : "29x29",
-      "filename" : "icon_w87.png"
-    },
-    {
-      "idiom" : "watch-marketing",
+      "filename" : "icon_w1024.png",
+      "idiom" : "universal",
+      "platform" : "watchos",
       "scale" : "1x",
-      "size" : "1024x1024",
-      "filename" : "icon_w1024.png"
+      "size" : "1024x1024"
     }
   ],
   "info" : {
