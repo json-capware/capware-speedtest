@@ -14,31 +14,30 @@ struct ResultBadge: View {
         }
     }
 
-    // Uses semantic colors from the design system
     private var fg: Color {
         switch mbps {
-        case ..<10:   return Color(red: 0.41, green: 0.12, blue: 0.12)  // error fg
-        case ..<50:   return Color(red: 0.41, green: 0.30, blue: 0.12)  // warning fg
-        case ..<200:  return Color(red: 0.12, green: 0.41, blue: 0.22)  // success fg
-        default:      return Color(red: 0.00, green: 0.58, blue: 0.58)  // accent-600
+        case ..<10:   return .capError
+        case ..<50:   return .capWarning
+        case ..<200:  return .capSuccess
+        default:      return .capAccentFg
         }
     }
 
     private var bg: Color {
         switch mbps {
-        case ..<10:   return Color(red: 0.97, green: 0.93, blue: 0.93)  // error bg
-        case ..<50:   return Color(red: 0.97, green: 0.95, blue: 0.93)  // warning bg
-        case ..<200:  return Color(red: 0.93, green: 0.97, blue: 0.94)  // success bg
-        default:      return Color(red: 0.95, green: 1.00, blue: 1.00)  // accent-50
+        case ..<10:   return .capErrorBg
+        case ..<50:   return .capWarningBg
+        case ..<200:  return .capSuccessBg
+        default:      return .capAccentBg
         }
     }
 
     private var border: Color {
         switch mbps {
-        case ..<10:   return Color(red: 0.88, green: 0.69, blue: 0.69)  // error border
-        case ..<50:   return Color(red: 0.88, green: 0.81, blue: 0.69)  // warning border
-        case ..<200:  return Color(red: 0.69, green: 0.88, blue: 0.76)  // success border
-        default:      return Color(red: 0.68, green: 0.98, blue: 0.98)  // accent-200
+        case ..<10:   return .capErrorBorder
+        case ..<50:   return .capWarningBorder
+        case ..<200:  return .capSuccessBorder
+        default:      return .capAccentBorder
         }
     }
 

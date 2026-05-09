@@ -87,7 +87,7 @@ struct SpeedGaugeView: View {
         case .failed:
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 32 * s, weight: .light))
-                .foregroundStyle(Color(red: 0.80, green: 0.32, blue: 0.10))
+                .foregroundStyle(Color.capError)
         }
     }
 

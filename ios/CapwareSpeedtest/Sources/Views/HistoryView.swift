@@ -62,7 +62,7 @@ struct HistoryView: View {
             HStack {
                 Label("Best Result", systemImage: "trophy.fill")
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Color(red: 0.85, green: 0.65, blue: 0.15))
+                    .foregroundStyle(Color.capAmber)
                     .tracking(0.5)
                 Spacer()
                 Text(dateFormatter.string(from: record.date))
@@ -87,7 +87,7 @@ struct HistoryView: View {
         .clipShape(RoundedRectangle(cornerRadius: 4))
         .overlay(
             RoundedRectangle(cornerRadius: 4)
-                .stroke(Color(red: 0.85, green: 0.65, blue: 0.15).opacity(0.4), lineWidth: 1)
+                .stroke(Color.capAmber.opacity(0.4), lineWidth: 1)
         )
         .padding(.horizontal, 20)
     }

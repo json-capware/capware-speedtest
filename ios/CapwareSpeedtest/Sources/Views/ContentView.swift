@@ -119,7 +119,7 @@ struct ContentView: View {
             HStack {
                 Label("Test complete", systemImage: "checkmark.circle.fill")
                     .font(.system(size: 13 * fScale, weight: .medium))
-                    .foregroundStyle(Color(red: 0.12, green: 0.41, blue: 0.22))
+                    .foregroundStyle(Color.capSuccess)
                 Spacer()
                 Button("Run Again") { vm.reset() }
                     .font(.system(size: 13 * fScale, weight: .semibold))
@@ -134,14 +134,14 @@ struct ContentView: View {
             HStack {
                 Text(msg)
                     .font(.system(size: 12 * fScale))
-                    .foregroundStyle(Color(red: 0.41, green: 0.12, blue: 0.12))
+                    .foregroundStyle(Color.capError)
                 Spacer()
                 Button("Try Again") { vm.reset() }
                     .font(.system(size: 13 * fScale, weight: .semibold))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 7)
-                    .background(Color(red: 0.41, green: 0.12, blue: 0.12))
+                    .background(Color.capError)
                     .clipShape(Capsule())
             }
         }
@@ -337,10 +337,10 @@ struct LatencyCell: View {
 
     private func latencyColor(_ ms: Double) -> Color {
         switch ms {
-        case ..<20:  return Color(red: 0.12, green: 0.41, blue: 0.22)
-        case ..<60:  return Color.capAccent
-        case ..<150: return Color.capAmber
-        default:     return Color(red: 0.80, green: 0.32, blue: 0.10)
+        case ..<20:  return .capSuccess
+        case ..<60:  return .capAccent
+        case ..<150: return .capAmber
+        default:     return .capError
         }
     }
 }
