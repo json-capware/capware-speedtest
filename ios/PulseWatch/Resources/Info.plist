@@ -10,6 +10,8 @@
     <true/>
     <key>WKCompanionAppBundleIdentifier</key>
     <string>co.capware.speedtest</string>
+    <key>CFBundleIconName</key>
+    <string>AppIcon</string>
     <key>CFBundleDisplayName</key>
     <string>Pulse</string>
     <key>CFBundleIdentifier</key>
