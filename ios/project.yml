@@ -1,4 +1,8 @@
 name: CapwareSpeedtest
+packages:
+  Mixpanel:
+    url: https://github.com/mixpanel/mixpanel-swift
+    from: "4.3.0"
 options:
   bundleIdPrefix: co.capware
   deploymentTarget:
@@ -33,6 +37,7 @@ targets:
         embed: true
       - sdk: WatchConnectivity.framework
         embed: false
+      - package: Mixpanel
 
   PulseWatch:
     type: application

@@ -4,6 +4,10 @@ import SwiftUI
 struct CapwareSpeedtestApp: App {
     @StateObject private var history = HistoryStore()
 
+    init() {
+        Analytics.initialize()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView(history: history)

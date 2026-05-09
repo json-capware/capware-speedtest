@@ -32,6 +32,7 @@ final class SpeedTestViewModel: ObservableObject {
 
     private var service: SpeedTestService?
     private weak var history: HistoryStore?
+    private var testStartTime: Date?
 
     init(history: HistoryStore) { self.history = history }
 
@@ -39,6 +40,8 @@ final class SpeedTestViewModel: ObservableObject {
         guard case .idle = state else { return }
         resetValues()
         state = .running(.ping)
+        testStartTime = Date()
+        Analytics.speedTestStarted()
 
         let svc = SpeedTestService()
         service = svc
@@ -100,8 +103,18 @@ final class SpeedTestViewModel: ObservableObject {
                     ispName: r.ispName,
                     deviceName: UIDevice.current.name
                 ))
+                let duration = self.testStartTime.map { Date().timeIntervalSince($0) } ?? 0
+                Analytics.speedTestCompleted(
+                    downloadMbps: r.downloadMbps,
+                    uploadMbps: r.uploadMbps,
+                    pingMs: r.unloadedPingMs,
+                    jitterMs: r.jitterMs,
+                    ispName: r.ispName,
+                    durationSeconds: duration
+                )
                 self.state = .done(r)
             case .failure(let err):
+                Analytics.speedTestFailed(error: err.localizedDescription)
                 self.state = .failed(err.localizedDescription)
             }
         }
