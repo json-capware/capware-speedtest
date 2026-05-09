@@ -1,6 +1,6 @@
 import SwiftUI
 
-// Colours live in Shared/DesignTokens.swift
+// Colours live in Shared/DesignTokens.swift — watchOS uses hardcoded dark values
 
 // MARK: - ContentView
 
@@ -12,7 +12,8 @@ struct ContentView: View {
             Color.capSurface.ignoresSafeArea()
             gauge
         }
-        .preferredColorScheme(.light)
+        .ignoresSafeArea()                  // fills behind status bar; black bg hides the clock
+        .preferredColorScheme(.light)       // keeps system chrome from overriding our colours
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
 
@@ -45,7 +46,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Idle center  (matches iOS SpeedGaugeView exactly)
+    // MARK: - Idle center
 
     private var idleCenter: some View {
         VStack(spacing: 6) {
@@ -59,7 +60,7 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Testing center  (live speed in gauge, matches iOS)
+    // MARK: - Testing center
 
     private func testingCenter(label: String, value: Double) -> some View {
         let isPing = label == "Measuring latency"
@@ -80,42 +81,34 @@ struct ContentView: View {
         }
     }
 
-    // MARK: - Results (scrollable, crown-navigable)
+    // MARK: - Results — single screen, no scroll
 
     private func resultsView(dl: Double, ul: Double, ping: Double, jitter: Double) -> some View {
-        GeometryReader { geo in
-            ScrollView {
-                VStack(spacing: 4) {
-                    Spacer(minLength: 0)
-
-                    VStack(spacing: 1) {
-                        Text(formatMbps(dl))
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
-                            .foregroundStyle(Color.capText)
-                        Text("Mbps  ↓")
-                            .font(.system(size: 9, weight: .medium))
-                            .foregroundStyle(Color.capSub)
-                    }
-
-                    Color.capBorder.frame(height: 1)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 3)
-
-                    WatchStatRow(label: "Upload", value: formatMbps(ul) + " ↑")
-                    WatchStatRow(label: "Ping",   value: String(format: "%.0f ms", ping))
-                    WatchStatRow(label: "Jitter", value: String(format: "%.0f ms", jitter))
-
-                    Button("Test Again") { session.reset() }
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundStyle(Color.capAccent)
-                        .padding(.top, 6)
-
-                    Spacer(minLength: 0)
-                }
-                .frame(maxWidth: .infinity, minHeight: geo.size.height)
+        VStack(spacing: 0) {
+            VStack(spacing: 1) {
+                Text(formatMbps(dl))
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.capText)
+                Text("Mbps  ↓")
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundStyle(Color.capSub)
             }
-            .focusable()
+            .padding(.bottom, 6)
+
+            Color.capBorder.frame(height: 1)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 6)
+
+            WatchStatRow(label: "Upload", value: formatMbps(ul) + " ↑")
+            WatchStatRow(label: "Ping",   value: String(format: "%.0f ms", ping))
+            WatchStatRow(label: "Jitter", value: String(format: "%.0f ms", jitter))
+
+            Button("Test Again") { session.reset() }
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Color.capAccent)
+                .padding(.top, 8)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
     // MARK: - Failed center
@@ -142,10 +135,6 @@ struct ContentView: View {
 }
 
 // MARK: - GaugeRing
-// Replicates the iOS SpeedGaugeView ring exactly:
-//   • capBorder track at 14 pt, round linecap
-//   • Gradient fill arc from 6 o'clock sweeping clockwise
-//   • GeometryReader centres the circle within whatever space is available
 
 private struct GaugeRing<Center: View>: View {
     let fill: CGFloat
@@ -154,14 +143,12 @@ private struct GaugeRing<Center: View>: View {
 
     var body: some View {
         GeometryReader { geo in
-            let diameter = min(geo.size.width, geo.size.height) - 16   // 8 pt inset each side
+            let diameter = min(geo.size.width, geo.size.height) - 16
             ZStack {
-                // Track — full circle
                 Circle()
                     .stroke(Color.capBorder,
                             style: StrokeStyle(lineWidth: 8, lineCap: .round))
 
-                // Fill arc — starts at 6 o'clock, sweeps clockwise
                 if fill > 0 {
                     Circle()
                         .trim(from: 0, to: fill)
@@ -178,7 +165,6 @@ private struct GaugeRing<Center: View>: View {
                 center()
             }
             .frame(width: diameter, height: diameter)
-            // Centre the fixed-size circle within the full available space
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
@@ -201,6 +187,7 @@ private struct WatchStatRow: View {
                 .foregroundStyle(Color.capText)
         }
         .padding(.horizontal, 20)
+        .padding(.vertical, 2)
     }
 }
 
