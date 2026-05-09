@@ -85,6 +85,8 @@ struct AppTabBar: View {
             ForEach(items.indices, id: \.self) { i in
                 Button {
                     selectedTab = i
+                    if i == 1 { Analytics.tabViewed("history") }
+                    if i == 2 { Analytics.tabViewed("settings") }
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: items[i].icon)

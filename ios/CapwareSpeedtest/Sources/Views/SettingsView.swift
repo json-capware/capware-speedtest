@@ -39,6 +39,7 @@ struct SettingsView: View {
         .background(Color.capSurface.ignoresSafeArea())
         .confirmationDialog("Delete all test history?", isPresented: $showConfirm, titleVisibility: .visible) {
             Button("Delete All", role: .destructive) {
+                Analytics.historyDeleted(recordCount: history.records.count)
                 history.deleteAll()
             }
             Button("Cancel", role: .cancel) {}

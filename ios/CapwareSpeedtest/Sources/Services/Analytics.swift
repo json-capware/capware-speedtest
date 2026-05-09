@@ -12,6 +12,18 @@ enum Analytics {
                             trackAutomaticEvents: true)
     }
 
+    // MARK: - Navigation
+
+    static func tabViewed(_ tab: String) {
+        track("tab_viewed", properties: ["tab": tab])
+    }
+
+    // MARK: - History
+
+    static func historyDeleted(recordCount: Int) {
+        track("history_deleted", properties: ["record_count": recordCount])
+    }
+
     // MARK: - Speed test lifecycle
 
     static func speedTestStarted() {
