@@ -1,5 +1,6 @@
 import Foundation
 import WatchConnectivity
+import WatchKit
 
 // MARK: - Phase
 
@@ -74,14 +75,15 @@ final class WatchSessionManager: NSObject, ObservableObject {
         guard WCSession.default.activationState == .activated else { return }
         // transferUserInfo queues delivery and doesn't need the iPhone app to be open
         WCSession.default.transferUserInfo([
-            "source":   "watch",
-            "id":       UUID().uuidString,
-            "date":     Date().timeIntervalSince1970,
-            "download": r.downloadMbps,
-            "upload":   r.uploadMbps,
-            "ping":     r.unloadedPingMs,
-            "jitter":   r.jitterMs,
-            "isp":      r.ispName ?? ""
+            "source":     "watch",
+            "id":         UUID().uuidString,
+            "date":       Date().timeIntervalSince1970,
+            "download":   r.downloadMbps,
+            "upload":     r.uploadMbps,
+            "ping":       r.unloadedPingMs,
+            "jitter":     r.jitterMs,
+            "isp":        r.ispName ?? "",
+            "deviceName": WKInterfaceDevice.current().name
         ])
     }
 

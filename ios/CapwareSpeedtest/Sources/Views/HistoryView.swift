@@ -155,6 +155,11 @@ struct HistoryRow: View {
                             .foregroundStyle(Color.capMuted)
                     }
                 }
+                if let device = record.deviceName {
+                    Text(device)
+                        .font(.system(size: 11))
+                        .foregroundStyle(Color.capSub)
+                }
                 if let isp = record.ispName {
                     Text(isp)
                         .font(.system(size: 11))

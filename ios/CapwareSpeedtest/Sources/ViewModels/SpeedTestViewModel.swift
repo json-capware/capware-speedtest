@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 enum TestState {
     case idle
@@ -41,6 +42,15 @@ final class SpeedTestViewModel: ObservableObject {
 
         let svc = SpeedTestService()
         service = svc
+
+        svc.onPhaseComplete = { [weak self] phase, value in
+            guard let self else { return }
+            switch phase {
+            case .download: self.downloadMbps = value
+            case .upload:   self.uploadMbps   = value
+            case .ping:     break
+            }
+        }
 
         svc.onPhaseStart = { [weak self] phase in
             guard let self else { return }
@@ -87,7 +97,8 @@ final class SpeedTestViewModel: ObservableObject {
                     uploadMbps: r.uploadMbps,
                     pingMs: r.unloadedPingMs,
                     jitterMs: r.jitterMs,
-                    ispName: r.ispName
+                    ispName: r.ispName,
+                    deviceName: UIDevice.current.name
                 ))
                 self.state = .done(r)
             case .failure(let err):

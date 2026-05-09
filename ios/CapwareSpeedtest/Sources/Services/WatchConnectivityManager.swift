@@ -46,7 +46,8 @@ extension WatchConnectivityManager: WCSessionDelegate {
             let jitter   = userInfo["jitter"]   as? Double
         else { return }
 
-        let isp = (userInfo["isp"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+        let isp        = (userInfo["isp"]        as? String).flatMap { $0.isEmpty ? nil : $0 }
+        let deviceName = (userInfo["deviceName"] as? String).flatMap { $0.isEmpty ? nil : $0 }
         let record = TestRecord(
             id:           id,
             date:         Date(timeIntervalSince1970: ts),
@@ -55,7 +56,8 @@ extension WatchConnectivityManager: WCSessionDelegate {
             pingMs:       ping,
             jitterMs:     jitter,
             ispName:      isp,
-            source:       .watch
+            source:       .watch,
+            deviceName:   deviceName
         )
 
         Task { @MainActor in

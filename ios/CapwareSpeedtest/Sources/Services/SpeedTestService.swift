@@ -48,10 +48,11 @@ final class SpeedTestService: NSObject {
     private let pingSession = URLSession(configuration: .ephemeral)
     private var streamSession: URLSession!
 
-    var onPhaseStart:  ((TestPhase) -> Void)?
-    var onProgress:    ((TestPhase, Double, Double) -> Void)?
-    var onLiveLatency: ((Double, Double) -> Void)?
-    var onComplete:    ((Result<SpeedResult, SpeedTestError>) -> Void)?
+    var onPhaseStart:    ((TestPhase) -> Void)?
+    var onPhaseComplete: ((TestPhase, Double) -> Void)?   // phase, final Mbps/ms value
+    var onProgress:      ((TestPhase, Double, Double) -> Void)?
+    var onLiveLatency:   ((Double, Double) -> Void)?
+    var onComplete:      ((Result<SpeedResult, SpeedTestError>) -> Void)?
 
     private var bytesMoved: Int64 = 0
     private var taskStart = Date()
@@ -117,6 +118,7 @@ final class SpeedTestService: NSObject {
             result.downloadMbps         = dl
             result.downloadLoadedPingMs = dlPing
             result.downloadJitterMs     = dlJitter
+            fire { self.onPhaseComplete?(.download, dl) }
             guard !cancelled else { return }
 
             fire { self.onPhaseStart?(.upload) }
