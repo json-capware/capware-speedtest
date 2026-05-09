@@ -123,7 +123,7 @@ struct ContentView: View {
                 Spacer()
                 Button("Run Again") { vm.reset() }
                     .font(.system(size: 13 * fScale, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(Color.capSurface)
                     .padding(.horizontal, 16)
                     .padding(.vertical, 7)
                     .background(Color.capText)
