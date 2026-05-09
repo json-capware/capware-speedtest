@@ -13,8 +13,6 @@ struct ContentView: View {
             gauge
         }
         .ignoresSafeArea()
-        .persistentSystemOverlays(.hidden)
-        .preferredColorScheme(.light)
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
 

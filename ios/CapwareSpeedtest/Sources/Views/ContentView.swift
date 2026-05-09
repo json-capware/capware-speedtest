@@ -24,13 +24,15 @@ struct ContentView: View {
             gaugeButton
                 .frame(width: gaugeSize, height: gaugeSize)
 
-            Spacer().frame(height: 16)
+            ispRow
+                .padding(.top, 10)
+                .padding(.bottom, 4)
 
             bridge
                 .padding(.horizontal, 24)
                 .frame(height: 44)
 
-            Spacer().frame(height: 16)
+            Spacer().frame(height: 8)
 
             resultTiles
                 .padding(.horizontal, 20)
@@ -54,18 +56,18 @@ struct ContentView: View {
     // MARK: - Subviews
 
     private var header: some View {
-        VStack(spacing: 3) {
-            Text("Pulse Internet Speed Test")
-                .font(.system(size: 20 * fScale, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.capText)
-            if let isp = vm.ispName {
-                Text(isp)
-                    .font(.system(size: 11 * fScale, weight: .medium))
-                    .foregroundStyle(Color.capSub)
-                    .transition(.opacity)
-            }
-        }
-        .animation(.easeInOut(duration: 0.3), value: vm.ispName)
+        Text("Pulse Internet Speed Test")
+            .font(.system(size: 20 * fScale, weight: .bold, design: .rounded))
+            .foregroundStyle(Color.capText)
+    }
+
+    private var ispRow: some View {
+        Text(vm.ispName ?? "")
+            .font(.system(size: 11 * fScale, weight: .medium))
+            .foregroundStyle(Color.capSub)
+            .opacity(vm.ispName != nil ? 1 : 0)
+            .animation(.easeInOut(duration: 0.3), value: vm.ispName)
+            .frame(height: 16 * fScale)
     }
 
     private var gaugeButton: some View {
