@@ -11,6 +11,8 @@ struct CapwareSpeedtestApp: App {
     }
 }
 
+// MARK: - RootView
+
 struct RootView: View {
     @ObservedObject var history: HistoryStore
     @StateObject private var vm: SpeedTestViewModel
@@ -24,8 +26,8 @@ struct RootView: View {
 
     var body: some View {
         GeometryReader { geo in
-            // iPhone landscape has compact vertical size class — use full width there.
-            // iPad landscape keeps both classes regular — cap content to portrait width.
+            // iPhone landscape (compact vertical) → full width, no cap
+            // iPad landscape (both regular)       → cap content to portrait width
             let isIPhoneLandscape = verticalSizeClass == .compact
             let contentWidth: CGFloat = isIPhoneLandscape
                 ? geo.size.width
@@ -49,6 +51,29 @@ struct RootView: View {
             .ignoresSafeArea(edges: .bottom)
         }
         .ignoresSafeArea()
+        .onAppear { configureWatch() }
+    }
+
+    // MARK: - Watch connectivity
+
+    private func configureWatch() {
+        let watch = WatchConnectivityManager.shared
+
+        // Watch taps Test → run the speed test on iPhone
+        watch.onTestRequest = { [weak vm] in
+            guard let vm, case .idle = vm.state else { return }
+            vm.run()
+        }
+
+        // Speed test finished → push summary to Watch
+        vm.onTestComplete = { result in
+            watch.sendResults(
+                download: result.downloadMbps,
+                upload:   result.uploadMbps,
+                ping:     result.unloadedPingMs,
+                jitter:   result.jitterMs
+            )
+        }
     }
 }
 

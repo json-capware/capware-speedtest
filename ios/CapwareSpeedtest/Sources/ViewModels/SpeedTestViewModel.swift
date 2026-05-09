@@ -34,6 +34,9 @@ final class SpeedTestViewModel: ObservableObject {
 
     init(history: HistoryStore) { self.history = history }
 
+    // Called after a successful test completes (used by WatchConnectivityManager)
+    var onTestComplete: ((SpeedResult) -> Void)?
+
     func run() {
         guard case .idle = state else { return }
         resetValues()
@@ -90,6 +93,7 @@ final class SpeedTestViewModel: ObservableObject {
                     ispName: r.ispName
                 ))
                 self.state = .done(r)
+                self.onTestComplete?(r)
             case .failure(let err):
                 self.state = .failed(err.localizedDescription)
             }
