@@ -8,14 +8,12 @@ struct ContentView: View {
     @StateObject private var session = WatchSessionManager.shared
 
     var body: some View {
-        NavigationStack {
-            ZStack {
-                Color.capSurface.ignoresSafeArea()
-                gauge
-            }
-            .ignoresSafeArea()
-            .toolbar(.hidden, for: .navigationBar)
+        ZStack {
+            Color.capSurface.ignoresSafeArea()
+            gauge
         }
+        .ignoresSafeArea()
+        .persistentSystemOverlays(.hidden)
         .preferredColorScheme(.light)
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
