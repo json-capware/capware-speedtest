@@ -45,12 +45,11 @@ targets:
     deploymentTarget: "10.0"
     sources:
       - path: PulseWatch/Sources
+      - path: PulseWatch/Resources/Assets.xcassets
       # Shared with iOS — pure Foundation, compiles on watchOS unchanged
       - path: CapwareSpeedtest/Sources/Services/SpeedTestService.swift
       - path: CapwareSpeedtest/Sources/Models/TestRecord.swift
       - path: Shared/DesignTokens.swift
-    resources:
-      - path: PulseWatch/Resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: co.capware.speedtest.watchkitapp

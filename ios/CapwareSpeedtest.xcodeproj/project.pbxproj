@@ -18,6 +18,7 @@
 		7D151243D4F517FAD262DABC /* SpeedGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE000198B43279B75838C83 /* SpeedGaugeView.swift */; };
 		8747F058C36EC9F2D85907BE /* TestRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24979D662CA33E5CC6FFC0F /* TestRecord.swift */; };
 		87AD0AD8E72DF98ACDF7DC38 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6AECEAE4F3B873ED72282 /* WatchSessionManager.swift */; };
+		89587C03E1938C56C660CD8A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E7E1B61CCC6081B9849AC9C1 /* Assets.xcassets */; };
 		91C77B5ECE35D429687B1BAC /* PulseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507594B550CE337DEEB1805F /* PulseWatchApp.swift */; };
 		9A9CE7A54D9272C38018672E /* SpeedTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9835901855368004CFD6A5 /* SpeedTestService.swift */; };
 		A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FAC720011799EF1F3701063 /* Assets.xcassets */; };
@@ -77,6 +78,7 @@
 		D1D754FF8C0CA4AED6F40DE0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D24979D662CA33E5CC6FFC0F /* TestRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRecord.swift; sourceTree = "<group>"; };
 		DC3C8A5E99BFBAF42D27B08F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
+		E7E1B61CCC6081B9849AC9C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EA473A97A23AF7A94B3FC86E /* CapwareSpeedtest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CapwareSpeedtest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F532A28331349632A5E5490D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultBadge.swift; sourceTree = "<group>"; };
@@ -119,6 +121,15 @@
 				8A2FDD164E4533A357020879 /* DesignTokens.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		36930ED03D56E54EEA534B39 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E7E1B61CCC6081B9849AC9C1 /* Assets.xcassets */,
+			);
+			name = Resources;
+			path = PulseWatch/Resources;
 			sourceTree = "<group>";
 		};
 		531029744BE7AAB845CC811A /* Sources */ = {
@@ -167,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				5CD94B941790980A94EF6C91 /* Resources */,
+				36930ED03D56E54EEA534B39 /* Resources */,
 				0E98ECE98AF9FFAAC39C9BE2 /* Shared */,
 				531029744BE7AAB845CC811A /* Sources */,
 				B4094FADD9036E5B7C5475B0 /* Sources */,
@@ -253,6 +265,7 @@
 			buildConfigurationList = 954F8B870AE2CEAFCFBA57AB /* Build configuration list for PBXNativeTarget "PulseWatch" */;
 			buildPhases = (
 				020E79A20A245E9BD40E26CB /* Sources */,
+				A40C965094CCC4C19B5C43BB /* Resources */,
 				045600CFD758DF42D76F3335 /* Frameworks */,
 			);
 			buildRules = (
@@ -313,6 +326,14 @@
 			files = (
 				A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */,
 				143FA7E64C35F92489A0EAE7 /* Colors.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A40C965094CCC4C19B5C43BB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89587C03E1938C56C660CD8A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
