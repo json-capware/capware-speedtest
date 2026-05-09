@@ -88,6 +88,8 @@ struct ContentView: View {
 
     private func resultsView(dl: Double, ul: Double, ping: Double, jitter: Double) -> some View {
         VStack(spacing: 0) {
+            Spacer(minLength: 0)
+
             VStack(spacing: 1) {
                 Text(formatMbps(dl))
                     .font(.system(size: 28, weight: .bold, design: .rounded))
@@ -110,6 +112,8 @@ struct ContentView: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(Color.capAccent)
                 .padding(.top, 8)
+
+            Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
