@@ -3,6 +3,9 @@ packages:
   Mixpanel:
     url: https://github.com/mixpanel/mixpanel-swift
     from: "4.3.0"
+  MixpanelSessionReplay:
+    url: https://github.com/mixpanel/mixpanel-ios-session-replay-package
+    from: "1.0.0"
 options:
   bundleIdPrefix: co.capware
   deploymentTarget:
@@ -41,6 +44,7 @@ targets:
       - sdk: WatchConnectivity.framework
         embed: false
       - package: Mixpanel
+      - package: MixpanelSessionReplay
 
   PulseWatch:
     type: application

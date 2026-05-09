@@ -13,6 +13,7 @@
 		3CA53514C76F16185DE22130 /* ResultBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */; };
 		442506A6DDFDFC6F0383CFC9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 88D0D6DA93704DAFE17A03D1 /* AppIcon.icon */; };
 		45DBDE0BE3CA770BF47373E9 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F532A28331349632A5E5490D /* WatchConnectivity.framework */; };
+		4C3C6183B39F34BB5F1F8FA9 /* MixpanelSessionReplay in Frameworks */ = {isa = PBXBuildFile; productRef = 3D2080022D0C3056ABD6AFF9 /* MixpanelSessionReplay */; };
 		50845F29CC4C95575267E49D /* TestRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24979D662CA33E5CC6FFC0F /* TestRecord.swift */; };
 		56D8ACA09EC932F4DC227675 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673E09EC4FBBE1EDBAE15F2A /* SettingsView.swift */; };
 		7034E0AD59A64ECBE8EFB8AE /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3C8A5E99BFBAF42D27B08F /* WatchConnectivityManager.swift */; };
@@ -102,6 +103,7 @@
 			files = (
 				D878ACEDD8712DB7C625E67B /* WatchConnectivity.framework in Frameworks */,
 				F51DB296E8A726FAD375F5C0 /* Mixpanel in Frameworks */,
+				4C3C6183B39F34BB5F1F8FA9 /* MixpanelSessionReplay in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +260,7 @@
 			name = CapwareSpeedtest;
 			packageProductDependencies = (
 				190AFE21E3E1F883BE5005F2 /* Mixpanel */,
+				3D2080022D0C3056ABD6AFF9 /* MixpanelSessionReplay */,
 			);
 			productName = CapwareSpeedtest;
 			productReference = EA473A97A23AF7A94B3FC86E /* CapwareSpeedtest.app */;
@@ -310,6 +313,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				8E5081D9470A6B495118F4E8 /* XCRemoteSwiftPackageReference "mixpanel-swift" */,
+				07C81F223F380D06DA1C2B73 /* XCRemoteSwiftPackageReference "mixpanel-ios-session-replay-package" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B2BCD556E658A7212CCC9806 /* Products */;
@@ -612,6 +616,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		07C81F223F380D06DA1C2B73 /* XCRemoteSwiftPackageReference "mixpanel-ios-session-replay-package" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mixpanel/mixpanel-ios-session-replay-package";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		8E5081D9470A6B495118F4E8 /* XCRemoteSwiftPackageReference "mixpanel-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mixpanel/mixpanel-swift";
@@ -627,6 +639,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E5081D9470A6B495118F4E8 /* XCRemoteSwiftPackageReference "mixpanel-swift" */;
 			productName = Mixpanel;
+		};
+		3D2080022D0C3056ABD6AFF9 /* MixpanelSessionReplay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 07C81F223F380D06DA1C2B73 /* XCRemoteSwiftPackageReference "mixpanel-ios-session-replay-package" */;
+			productName = MixpanelSessionReplay;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

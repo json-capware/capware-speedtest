@@ -1,15 +1,34 @@
 import Foundation
 import Mixpanel
+import MixpanelSessionReplay
 
 // MARK: - Analytics
 // Single entry point for all Mixpanel tracking.
-// No user identity — anonymous device tracking only (no login flow).
+// Uses a persistent device-scoped distinct ID (no login flow).
 
 enum Analytics {
 
     static func initialize() {
+        // useUniqueDistinctId generates a stable UUID on first launch and
+        // persists it — this is what populates the People section.
         Mixpanel.initialize(token: "ca5c29f99220473d213df79a1ac35a5c",
-                            trackAutomaticEvents: true)
+                            trackAutomaticEvents: true,
+                            useUniqueDistinctId: true)
+
+        let mixpanel = Mixpanel.mainInstance()
+
+        // Link this device's event stream to a People profile.
+        mixpanel.identify(distinctId: mixpanel.distinctId)
+        mixpanel.people.setOnce(properties: ["$first_seen": Date()])
+
+        // Session Replay — records screen interactions and links them to
+        // the same distinctId so replays appear alongside events/people.
+        let replayConfig = MPSessionReplayConfig(wifiOnly: false)
+        MPSessionReplay.initialize(
+            token: mixpanel.apiToken,
+            distinctId: mixpanel.distinctId,
+            config: replayConfig
+        )
     }
 
     // MARK: - Navigation
