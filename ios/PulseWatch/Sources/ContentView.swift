@@ -12,6 +12,7 @@ struct ContentView: View {
             Color.capSurface.ignoresSafeArea()
             gauge
         }
+        .preferredColorScheme(.light)
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
 
