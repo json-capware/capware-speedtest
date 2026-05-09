@@ -10,6 +10,9 @@ options:
     watchOS: "10.0"
   xcodeVersion: "15.0"
   generateEmptyDirectories: true
+  fileTypes:
+    icon:
+      file: true
 
 settings:
   base:
@@ -46,12 +49,11 @@ targets:
     sources:
       - path: PulseWatch/Sources
       - path: PulseWatch/Resources/Assets.xcassets
+      - path: PulseWatch/Resources/AppIcon.icon
       # Shared with iOS — pure Foundation, compiles on watchOS unchanged
       - path: CapwareSpeedtest/Sources/Services/SpeedTestService.swift
       - path: CapwareSpeedtest/Sources/Models/TestRecord.swift
       - path: Shared/DesignTokens.swift
-      - path: PulseWatch/Resources/WatchIcons
-        buildPhase: resources
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: co.capware.speedtest.watchkitapp

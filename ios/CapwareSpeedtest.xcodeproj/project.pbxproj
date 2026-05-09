@@ -7,21 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		02AD5420A389A4C02F8BCE1A /* AppIcon50x50@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D3DFAF485566F6B2A4BD583 /* AppIcon50x50@2x.png */; };
 		1342C8667D7E347C6CA901D5 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46813418E057FD138DDD19C6 /* HistoryView.swift */; };
 		143FA7E64C35F92489A0EAE7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6466EB453CFA1FECB2A8F264 /* Colors.xcassets */; };
 		1B63BDD6D9691DF2AE29AEF3 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7A07BFB8AE1679004E21BD /* HistoryStore.swift */; };
-		339B12785CF96140B44156BC /* AppIcon29x29@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EF5621709F41039BAADC9FDA /* AppIcon29x29@2x.png */; };
-		38759AA2125B779E001554B4 /* AppIcon108x108@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7F1540741973569D5BD1560C /* AppIcon108x108@2x.png */; };
 		3CA53514C76F16185DE22130 /* ResultBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */; };
-		43F0B645D8639AFBA476CBF8 /* AppIcon24x24@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 6308200D980CECE8C5F30DF5 /* AppIcon24x24@2x.png */; };
+		442506A6DDFDFC6F0383CFC9 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 88D0D6DA93704DAFE17A03D1 /* AppIcon.icon */; };
 		45DBDE0BE3CA770BF47373E9 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F532A28331349632A5E5490D /* WatchConnectivity.framework */; };
 		50845F29CC4C95575267E49D /* TestRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24979D662CA33E5CC6FFC0F /* TestRecord.swift */; };
-		53CD6A409BB80114320A90A6 /* AppIcon27.5x27.5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CD0FD0DF48468652203477F2 /* AppIcon27.5x27.5@2x.png */; };
 		56D8ACA09EC932F4DC227675 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673E09EC4FBBE1EDBAE15F2A /* SettingsView.swift */; };
-		6AD3EA9A0842850134A9BD8A /* AppIcon86x86@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3B2E260CF5439056546DBC6 /* AppIcon86x86@2x.png */; };
 		7034E0AD59A64ECBE8EFB8AE /* WatchConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3C8A5E99BFBAF42D27B08F /* WatchConnectivityManager.swift */; };
-		716CD7BBF8357FD004CF2504 /* AppIcon98x98@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 00EA8C043914078E12B1C5D4 /* AppIcon98x98@2x.png */; };
 		7D151243D4F517FAD262DABC /* SpeedGaugeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE000198B43279B75838C83 /* SpeedGaugeView.swift */; };
 		8747F058C36EC9F2D85907BE /* TestRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D24979D662CA33E5CC6FFC0F /* TestRecord.swift */; };
 		87AD0AD8E72DF98ACDF7DC38 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46A6AECEAE4F3B873ED72282 /* WatchSessionManager.swift */; };
@@ -29,8 +23,6 @@
 		91C77B5ECE35D429687B1BAC /* PulseWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 507594B550CE337DEEB1805F /* PulseWatchApp.swift */; };
 		9A9CE7A54D9272C38018672E /* SpeedTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9835901855368004CFD6A5 /* SpeedTestService.swift */; };
 		A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7FAC720011799EF1F3701063 /* Assets.xcassets */; };
-		AA8729F89C50F15D03CEB4F0 /* AppIcon44x44@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1655EF72BB3CB61570196DB0 /* AppIcon44x44@2x.png */; };
-		AFFD6FA4DE91A927406C3154 /* AppIcon40x40@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC91CBB0C2CDDEE6D117F8BC /* AppIcon40x40@2x.png */; };
 		BB7BD75E7C5E46E0CF8111E7 /* SpeedTestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9835901855368004CFD6A5 /* SpeedTestService.swift */; };
 		BE5B481BD12370CF9E990DFE /* CapwareSpeedtestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD6CF76B29EDD0D8100A9E84 /* CapwareSpeedtestApp.swift */; };
 		BFE92DFBA19B61DC8E903832 /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0052EF04B887ADC006D19CC8 /* Analytics.swift */; };
@@ -70,8 +62,6 @@
 
 /* Begin PBXFileReference section */
 		0052EF04B887ADC006D19CC8 /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
-		00EA8C043914078E12B1C5D4 /* AppIcon98x98@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon98x98@2x.png"; sourceTree = "<group>"; };
-		1655EF72BB3CB61570196DB0 /* AppIcon44x44@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon44x44@2x.png"; sourceTree = "<group>"; };
 		24772561FAB2C28E22A69703 /* SpeedTestViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestViewModel.swift; sourceTree = "<group>"; };
 		3A9835901855368004CFD6A5 /* SpeedTestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedTestService.swift; sourceTree = "<group>"; };
 		46813418E057FD138DDD19C6 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
@@ -79,27 +69,21 @@
 		4D7A07BFB8AE1679004E21BD /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		507594B550CE337DEEB1805F /* PulseWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseWatchApp.swift; sourceTree = "<group>"; };
 		5EC174D7E22DCB6340CF2B7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		6308200D980CECE8C5F30DF5 /* AppIcon24x24@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon24x24@2x.png"; sourceTree = "<group>"; };
 		6466EB453CFA1FECB2A8F264 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		673E09EC4FBBE1EDBAE15F2A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		7F1540741973569D5BD1560C /* AppIcon108x108@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon108x108@2x.png"; sourceTree = "<group>"; };
 		7FAC720011799EF1F3701063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		88D0D6DA93704DAFE17A03D1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		8A2FDD164E4533A357020879 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
-		9D3DFAF485566F6B2A4BD583 /* AppIcon50x50@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon50x50@2x.png"; sourceTree = "<group>"; };
 		A237595CC70BF47AAE69421A /* PulseWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE000198B43279B75838C83 /* SpeedGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedGaugeView.swift; sourceTree = "<group>"; };
-		CD0FD0DF48468652203477F2 /* AppIcon27.5x27.5@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon27.5x27.5@2x.png"; sourceTree = "<group>"; };
 		D0328095AFDA7261B5406890 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D1D754FF8C0CA4AED6F40DE0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		D24979D662CA33E5CC6FFC0F /* TestRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestRecord.swift; sourceTree = "<group>"; };
-		D3B2E260CF5439056546DBC6 /* AppIcon86x86@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon86x86@2x.png"; sourceTree = "<group>"; };
 		DC3C8A5E99BFBAF42D27B08F /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		E7E1B61CCC6081B9849AC9C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EA473A97A23AF7A94B3FC86E /* CapwareSpeedtest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = CapwareSpeedtest.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF5621709F41039BAADC9FDA /* AppIcon29x29@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon29x29@2x.png"; sourceTree = "<group>"; };
 		F532A28331349632A5E5490D /* WatchConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WatchConnectivity.framework; path = System/Library/Frameworks/WatchConnectivity.framework; sourceTree = SDKROOT; };
 		F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultBadge.swift; sourceTree = "<group>"; };
-		FC91CBB0C2CDDEE6D117F8BC /* AppIcon40x40@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon40x40@2x.png"; sourceTree = "<group>"; };
 		FD6CF76B29EDD0D8100A9E84 /* CapwareSpeedtestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapwareSpeedtestApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -144,6 +128,7 @@
 		36930ED03D56E54EEA534B39 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				88D0D6DA93704DAFE17A03D1 /* AppIcon.icon */,
 				E7E1B61CCC6081B9849AC9C1 /* Assets.xcassets */,
 			);
 			name = Resources;
@@ -200,7 +185,6 @@
 				0E98ECE98AF9FFAAC39C9BE2 /* Shared */,
 				531029744BE7AAB845CC811A /* Sources */,
 				B4094FADD9036E5B7C5475B0 /* Sources */,
-				F962242B922DE0D215A4CD68 /* WatchIcons */,
 				0536D3188CD08654389CE4B9 /* Frameworks */,
 				B2BCD556E658A7212CCC9806 /* Products */,
 			);
@@ -240,23 +224,6 @@
 				FD6CF76B29EDD0D8100A9E84 /* CapwareSpeedtestApp.swift */,
 			);
 			path = App;
-			sourceTree = "<group>";
-		};
-		F962242B922DE0D215A4CD68 /* WatchIcons */ = {
-			isa = PBXGroup;
-			children = (
-				6308200D980CECE8C5F30DF5 /* AppIcon24x24@2x.png */,
-				CD0FD0DF48468652203477F2 /* AppIcon27.5x27.5@2x.png */,
-				EF5621709F41039BAADC9FDA /* AppIcon29x29@2x.png */,
-				FC91CBB0C2CDDEE6D117F8BC /* AppIcon40x40@2x.png */,
-				1655EF72BB3CB61570196DB0 /* AppIcon44x44@2x.png */,
-				9D3DFAF485566F6B2A4BD583 /* AppIcon50x50@2x.png */,
-				D3B2E260CF5439056546DBC6 /* AppIcon86x86@2x.png */,
-				00EA8C043914078E12B1C5D4 /* AppIcon98x98@2x.png */,
-				7F1540741973569D5BD1560C /* AppIcon108x108@2x.png */,
-			);
-			name = WatchIcons;
-			path = PulseWatch/Resources/WatchIcons;
 			sourceTree = "<group>";
 		};
 		F978A4994603D16A9ABC1FE0 /* Views */ = {
@@ -369,15 +336,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				38759AA2125B779E001554B4 /* AppIcon108x108@2x.png in Resources */,
-				43F0B645D8639AFBA476CBF8 /* AppIcon24x24@2x.png in Resources */,
-				53CD6A409BB80114320A90A6 /* AppIcon27.5x27.5@2x.png in Resources */,
-				339B12785CF96140B44156BC /* AppIcon29x29@2x.png in Resources */,
-				AFFD6FA4DE91A927406C3154 /* AppIcon40x40@2x.png in Resources */,
-				AA8729F89C50F15D03CEB4F0 /* AppIcon44x44@2x.png in Resources */,
-				02AD5420A389A4C02F8BCE1A /* AppIcon50x50@2x.png in Resources */,
-				6AD3EA9A0842850134A9BD8A /* AppIcon86x86@2x.png in Resources */,
-				716CD7BBF8357FD004CF2504 /* AppIcon98x98@2x.png in Resources */,
+				442506A6DDFDFC6F0383CFC9 /* AppIcon.icon in Resources */,
 				89587C03E1938C56C660CD8A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
