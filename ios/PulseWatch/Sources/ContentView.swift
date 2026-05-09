@@ -34,24 +34,23 @@ struct ContentView: View {
     // MARK: - Idle
 
     private var idleView: some View {
-        VStack(spacing: 10) {
-            Image(systemName: "gauge.with.dots.needle.67percent")
-                .font(.system(size: 36, weight: .light))
-                .foregroundStyle(Color.capAccent)
-
-            Text("Pulse")
-                .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundStyle(Color.capSub)
-
-            Button {
-                session.requestTest()
-            } label: {
-                Label("Test", systemImage: "play.fill")
-                    .font(.system(size: 14, weight: .semibold))
+        Button {
+            session.requestTest()
+        } label: {
+            ZStack {
+                Circle()
+                    .stroke(Color.capAccent.opacity(0.25), lineWidth: 6)
+                Circle()
+                    .stroke(Color.capAccent, lineWidth: 6)
+                    .padding(1)
+                    .scaleEffect(0.92)
+                Image(systemName: "play.fill")
+                    .font(.system(size: 22, weight: .medium))
+                    .foregroundStyle(Color.capAccent)
+                    .offset(x: 2)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color.capAccent)
         }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Testing
