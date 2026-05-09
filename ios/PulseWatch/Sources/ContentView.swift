@@ -12,6 +12,7 @@ struct ContentView: View {
             Color.capSurface.ignoresSafeArea()
             gauge
         }
+        .ignoresSafeArea()
         .preferredColorScheme(.light)
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
@@ -150,12 +151,12 @@ private struct GaugeRing<Center: View>: View {
 
     var body: some View {
         GeometryReader { geo in
-            let diameter = min(geo.size.width, geo.size.height) - 28   // 14 pt inset each side
+            let diameter = min(geo.size.width, geo.size.height) - 16   // 8 pt inset each side
             ZStack {
-                // Track — full circle, same as iOS
+                // Track — full circle
                 Circle()
                     .stroke(Color.capBorder,
-                            style: StrokeStyle(lineWidth: 14, lineCap: .round))
+                            style: StrokeStyle(lineWidth: 8, lineCap: .round))
 
                 // Fill arc — starts at 6 o'clock, sweeps clockwise
                 if fill > 0 {
@@ -165,7 +166,7 @@ private struct GaugeRing<Center: View>: View {
                             LinearGradient(colors: colors,
                                            startPoint: .leading,
                                            endPoint: .trailing),
-                            style: StrokeStyle(lineWidth: 14, lineCap: .round)
+                            style: StrokeStyle(lineWidth: 8, lineCap: .round)
                         )
                         .rotationEffect(.degrees(90))
                         .animation(.easeOut(duration: 0.25), value: fill)
