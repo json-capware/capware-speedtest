@@ -84,35 +84,39 @@ struct ContentView: View {
     // MARK: - Results (scrollable, crown-navigable)
 
     private func resultsView(dl: Double, ul: Double, ping: Double, jitter: Double) -> some View {
-        ScrollView {
-            VStack(spacing: 4) {
-                VStack(spacing: 1) {
-                    Text(formatMbps(dl))
-                        .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .foregroundStyle(Color.capText)
-                    Text("Mbps  ↓")
-                        .font(.system(size: 9, weight: .medium))
-                        .foregroundStyle(Color.capSub)
+        GeometryReader { geo in
+            ScrollView {
+                VStack(spacing: 4) {
+                    Spacer(minLength: 0)
+
+                    VStack(spacing: 1) {
+                        Text(formatMbps(dl))
+                            .font(.system(size: 30, weight: .bold, design: .rounded))
+                            .foregroundStyle(Color.capText)
+                        Text("Mbps  ↓")
+                            .font(.system(size: 9, weight: .medium))
+                            .foregroundStyle(Color.capSub)
+                    }
+
+                    Color.capBorder.frame(height: 1)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 3)
+
+                    WatchStatRow(label: "Upload", value: formatMbps(ul) + " ↑")
+                    WatchStatRow(label: "Ping",   value: String(format: "%.0f ms", ping))
+                    WatchStatRow(label: "Jitter", value: String(format: "%.0f ms", jitter))
+
+                    Button("Test Again") { session.reset() }
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(Color.capAccent)
+                        .padding(.top, 6)
+
+                    Spacer(minLength: 0)
                 }
-                .padding(.top, 8)
-
-                Color.capBorder.frame(height: 1)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 3)
-
-                WatchStatRow(label: "Upload", value: formatMbps(ul) + " ↑")
-                WatchStatRow(label: "Ping",   value: String(format: "%.0f ms", ping))
-                WatchStatRow(label: "Jitter", value: String(format: "%.0f ms", jitter))
-
-                Button("Test Again") { session.reset() }
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(Color.capAccent)
-                    .padding(.top, 6)
-                    .padding(.bottom, 4)
+                .frame(maxWidth: .infinity, minHeight: geo.size.height)
             }
-            .frame(maxWidth: .infinity)
+            .focusable()
         }
-        .focusable()
     }
 
     // MARK: - Failed center
