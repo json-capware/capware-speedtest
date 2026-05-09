@@ -8,12 +8,15 @@ struct ContentView: View {
     @StateObject private var session = WatchSessionManager.shared
 
     var body: some View {
-        ZStack {
-            Color.capSurface.ignoresSafeArea()
-            gauge
+        NavigationStack {
+            ZStack {
+                Color.capSurface.ignoresSafeArea()
+                gauge
+            }
+            .ignoresSafeArea()
+            .toolbar(.hidden, for: .navigationBar)
         }
-        .ignoresSafeArea()                  // fills behind status bar; black bg hides the clock
-        .preferredColorScheme(.light)       // keeps system chrome from overriding our colours
+        .preferredColorScheme(.light)
         .animation(.easeInOut(duration: 0.3), value: session.phase)
     }
 
