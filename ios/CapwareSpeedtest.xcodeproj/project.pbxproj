@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1342C8667D7E347C6CA901D5 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46813418E057FD138DDD19C6 /* HistoryView.swift */; };
+		143FA7E64C35F92489A0EAE7 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6466EB453CFA1FECB2A8F264 /* Colors.xcassets */; };
 		1B63BDD6D9691DF2AE29AEF3 /* HistoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7A07BFB8AE1679004E21BD /* HistoryStore.swift */; };
 		3CA53514C76F16185DE22130 /* ResultBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F888C30DC96C0C0DD4962C0C /* ResultBadge.swift */; };
 		45DBDE0BE3CA770BF47373E9 /* WatchConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F532A28331349632A5E5490D /* WatchConnectivity.framework */; };
@@ -63,6 +64,7 @@
 		4D7A07BFB8AE1679004E21BD /* HistoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryStore.swift; sourceTree = "<group>"; };
 		507594B550CE337DEEB1805F /* PulseWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseWatchApp.swift; sourceTree = "<group>"; };
 		5EC174D7E22DCB6340CF2B7D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6466EB453CFA1FECB2A8F264 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		673E09EC4FBBE1EDBAE15F2A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		7FAC720011799EF1F3701063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8A2FDD164E4533A357020879 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
@@ -109,6 +111,7 @@
 		0E98ECE98AF9FFAAC39C9BE2 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				6466EB453CFA1FECB2A8F264 /* Colors.xcassets */,
 				8A2FDD164E4533A357020879 /* DesignTokens.swift */,
 			);
 			path = Shared;
@@ -300,6 +303,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A62E9B9AF38521A9DE9828F7 /* Assets.xcassets in Resources */,
+				143FA7E64C35F92489A0EAE7 /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

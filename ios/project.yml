@@ -46,6 +46,7 @@ targets:
       - path: Shared/DesignTokens.swift
     resources:
       - path: PulseWatch/Resources
+      - path: Shared/Colors.xcassets
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: co.capware.speedtest.watchkitapp
