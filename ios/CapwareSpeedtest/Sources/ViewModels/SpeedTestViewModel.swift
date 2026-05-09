@@ -105,12 +105,16 @@ final class SpeedTestViewModel: ObservableObject {
                 ))
                 let duration = self.testStartTime.map { Date().timeIntervalSince($0) } ?? 0
                 Analytics.speedTestCompleted(
-                    downloadMbps: r.downloadMbps,
-                    uploadMbps: r.uploadMbps,
-                    pingMs: r.unloadedPingMs,
-                    jitterMs: r.jitterMs,
-                    ispName: r.ispName,
-                    durationSeconds: duration
+                    downloadMbps:         r.downloadMbps,
+                    uploadMbps:           r.uploadMbps,
+                    unloadedPingMs:       r.unloadedPingMs,
+                    jitterMs:             r.jitterMs,
+                    downloadLoadedPingMs: r.downloadLoadedPingMs,
+                    downloadJitterMs:     r.downloadJitterMs,
+                    uploadLoadedPingMs:   r.uploadLoadedPingMs,
+                    uploadJitterMs:       r.uploadJitterMs,
+                    ispName:              r.ispName,
+                    durationSeconds:      duration
                 )
                 self.state = .done(r)
             case .failure(let err):

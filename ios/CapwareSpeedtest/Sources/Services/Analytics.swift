@@ -33,17 +33,25 @@ enum Analytics {
     static func speedTestCompleted(
         downloadMbps: Double,
         uploadMbps: Double,
-        pingMs: Double,
+        unloadedPingMs: Double,
         jitterMs: Double,
+        downloadLoadedPingMs: Double,
+        downloadJitterMs: Double,
+        uploadLoadedPingMs: Double,
+        uploadJitterMs: Double,
         ispName: String?,
         durationSeconds: Double
     ) {
         var props: Properties = [
-            "download_mbps":     downloadMbps,
-            "upload_mbps":       uploadMbps,
-            "ping_ms":           pingMs,
-            "jitter_ms":         jitterMs,
-            "duration_seconds":  durationSeconds,
+            "download_mbps":           downloadMbps,
+            "upload_mbps":             uploadMbps,
+            "unloaded_ping_ms":        unloadedPingMs,
+            "jitter_ms":               jitterMs,
+            "download_loaded_ping_ms": downloadLoadedPingMs,
+            "download_jitter_ms":      downloadJitterMs,
+            "upload_loaded_ping_ms":   uploadLoadedPingMs,
+            "upload_jitter_ms":        uploadJitterMs,
+            "duration_seconds":        durationSeconds,
         ]
         if let isp = ispName { props["isp_name"] = isp }
         track("speed_test_completed", properties: props)
