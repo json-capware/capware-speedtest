@@ -42,6 +42,7 @@ targets:
         SUPPORTS_MACCATALYST: "YES"
         DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: "NO"
         MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER: co.capware.speedtest.macos
+        CODE_SIGN_ENTITLEMENTS: CapwareSpeedtest/Resources/CapwareSpeedtest.entitlements
     dependencies:
       - target: PulseWatch
         embed: true

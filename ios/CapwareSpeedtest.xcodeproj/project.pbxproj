@@ -90,6 +90,7 @@
 		7DD052A4E18F110477434D82 /* PulseTV.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PulseTV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7FAC720011799EF1F3701063 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		88D0D6DA93704DAFE17A03D1 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		89CAA8278C5038BE6D4E3BA5 /* CapwareSpeedtest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CapwareSpeedtest.entitlements; sourceTree = "<group>"; };
 		8A2FDD164E4533A357020879 /* DesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignTokens.swift; sourceTree = "<group>"; };
 		A237595CC70BF47AAE69421A /* PulseWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PulseWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAE000198B43279B75838C83 /* SpeedGaugeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedGaugeView.swift; sourceTree = "<group>"; };
@@ -177,6 +178,7 @@
 			isa = PBXGroup;
 			children = (
 				7FAC720011799EF1F3701063 /* Assets.xcassets */,
+				89CAA8278C5038BE6D4E3BA5 /* CapwareSpeedtest.entitlements */,
 				5EC174D7E22DCB6340CF2B7D /* Info.plist */,
 			);
 			name = Resources;
@@ -491,6 +493,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CapwareSpeedtest/Resources/CapwareSpeedtest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				INFOPLIST_FILE = CapwareSpeedtest/Resources/Info.plist;
@@ -640,6 +643,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CapwareSpeedtest/Resources/CapwareSpeedtest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DERIVE_MACCATALYST_PRODUCT_BUNDLE_IDENTIFIER = NO;
 				INFOPLIST_FILE = CapwareSpeedtest/Resources/Info.plist;
