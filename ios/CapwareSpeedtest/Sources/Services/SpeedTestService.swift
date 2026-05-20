@@ -12,9 +12,9 @@ enum SpeedTestError: Error, LocalizedError {
     }
 }
 
-enum TestPhase { case ping, download, upload }
+enum TestPhase: Equatable { case ping, download, upload }
 
-struct SpeedResult {
+struct SpeedResult: Equatable {
     var unloadedPingMs: Double       = 0
     var jitterMs: Double             = 0
     var downloadLoadedPingMs: Double = 0

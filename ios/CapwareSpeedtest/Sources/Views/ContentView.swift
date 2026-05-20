@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 
 // Colours live in Shared/DesignTokens.swift
 
@@ -8,6 +9,9 @@ struct ContentView: View {
 
     @ObservedObject var vm: SpeedTestViewModel
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.requestReview) private var requestReview
+
+    @AppStorage("completedTestCount") private var completedTestCount = 0
 
     private var isIPad: Bool { sizeClass == .regular }
     private var fScale: CGFloat { isIPad ? 1.25 : 1.0 }
@@ -51,6 +55,16 @@ struct ContentView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.capSurface.ignoresSafeArea())
+        .onChange(of: vm.state) { _, newState in
+            if case .done = newState {
+                completedTestCount += 1
+                guard completedTestCount >= 3 else { return }
+                Task {
+                    try? await Task.sleep(for: .seconds(5))
+                    requestReview()
+                }
+            }
+        }
     }
 
     // MARK: - Subviews

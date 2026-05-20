@@ -3,7 +3,7 @@ import Foundation
 import UIKit
 #endif
 
-enum TestState {
+enum TestState: Equatable {
     case idle
     case running(TestPhase)
     case done(SpeedResult)
