@@ -58,7 +58,6 @@ struct ContentView: View {
         .onChange(of: vm.state) { _, newState in
             if case .done = newState {
                 completedTestCount += 1
-                guard completedTestCount >= 3 else { return }
                 Task {
                     try? await Task.sleep(for: .seconds(5))
                     requestReview()
