@@ -1,12 +1,25 @@
 import Foundation
 import Mixpanel
+#if os(iOS) && !targetEnvironment(macCatalyst)
 import MixpanelSessionReplay
+#endif
 
 // MARK: - Analytics
 // Single entry point for all Mixpanel tracking.
 // Uses a persistent device-scoped distinct ID (no login flow).
 
 enum Analytics {
+
+    // MARK: - Environment
+
+    static var environment: String {
+        #if targetEnvironment(simulator)
+        return "development"
+        #else
+        guard let url = Bundle.main.appStoreReceiptURL else { return "development" }
+        return url.lastPathComponent == "sandboxReceipt" ? "testflight" : "production"
+        #endif
+    }
 
     static func initialize() {
         // useUniqueDistinctId generates a stable UUID on first launch and
@@ -17,18 +30,23 @@ enum Analytics {
 
         let mixpanel = Mixpanel.mainInstance()
 
+        // Tag every event with the build environment so TestFlight and
+        // production data can be filtered independently in Mixpanel.
+        mixpanel.registerSuperProperties(["environment": environment])
+
         // Link this device's event stream to a People profile.
         mixpanel.identify(distinctId: mixpanel.distinctId)
-        mixpanel.people.setOnce(properties: ["$first_seen": Date()])
+        mixpanel.people.setOnce(properties: ["$first_seen": Date(), "environment": environment])
 
-        // Session Replay — records screen interactions and links them to
-        // the same distinctId so replays appear alongside events/people.
+        // Session Replay — iOS only (not available on Catalyst/tvOS/macOS).
+        #if os(iOS) && !targetEnvironment(macCatalyst)
         let replayConfig = MPSessionReplayConfig(wifiOnly: false)
         MPSessionReplay.initialize(
             token: mixpanel.apiToken,
             distinctId: mixpanel.distinctId,
             config: replayConfig
         )
+        #endif
     }
 
     // MARK: - Navigation

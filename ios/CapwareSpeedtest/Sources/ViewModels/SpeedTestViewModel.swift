@@ -1,5 +1,7 @@
 import Foundation
+#if canImport(UIKit)
 import UIKit
+#endif
 
 enum TestState {
     case idle
@@ -101,7 +103,13 @@ final class SpeedTestViewModel: ObservableObject {
                     pingMs: r.unloadedPingMs,
                     jitterMs: r.jitterMs,
                     ispName: r.ispName,
-                    deviceName: UIDevice.current.name
+                    deviceName: {
+                        #if canImport(UIKit)
+                        return UIDevice.current.name
+                        #else
+                        return Host.current().localizedName ?? "Mac"
+                        #endif
+                    }()
                 ))
                 let duration = self.testStartTime.map { Date().timeIntervalSince($0) } ?? 0
                 Analytics.speedTestCompleted(

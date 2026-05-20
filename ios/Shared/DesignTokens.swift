@@ -6,7 +6,7 @@ import SwiftUI
 
 extension Color {
 
-#if os(watchOS)
+#if os(watchOS) || os(tvOS)
 
     // Surfaces
     static let capSurface = Color.black
