@@ -11,7 +11,7 @@ struct ContentView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.requestReview) private var requestReview
 
-    @AppStorage("completedTestCount") private var completedTestCount = 0
+    @AppStorage("hasRequestedReview") private var hasRequestedReview = false
 
     private var isIPad: Bool { sizeClass == .regular }
     private var fScale: CGFloat { isIPad ? 1.25 : 1.0 }
@@ -56,8 +56,8 @@ struct ContentView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.capSurface.ignoresSafeArea())
         .onChange(of: vm.state) { _, newState in
-            if case .done = newState {
-                completedTestCount += 1
+            if case .done = newState, !hasRequestedReview {
+                hasRequestedReview = true
                 Task {
                     try? await Task.sleep(for: .seconds(5))
                     requestReview()
