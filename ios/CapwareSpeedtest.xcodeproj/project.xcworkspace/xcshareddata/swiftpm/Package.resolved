@@ -1,0 +1,33 @@
+{
+  "originHash" : "0239bea152689b72771c421b59247e5adacd182549b48d6b7aa53ae8bdbe9a68",
+  "pins" : [
+    {
+      "identity" : "mixpanel-ios-session-replay-package",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mixpanel/mixpanel-ios-session-replay-package",
+      "state" : {
+        "revision" : "5e1a00423bd74340b195e52b9f1640ff5ba5a863",
+        "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "mixpanel-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mixpanel/mixpanel-swift",
+      "state" : {
+        "revision" : "c550cbef7654e59d06bf9c224ea25f681dea8975",
+        "version" : "4.4.0"
+      }
+    },
+    {
+      "identity" : "mixpanel-swift-common",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mixpanel/mixpanel-swift-common.git",
+      "state" : {
+        "revision" : "ffd168d972a1bea7e86104f253a3e105c69217e5",
+        "version" : "1.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}
