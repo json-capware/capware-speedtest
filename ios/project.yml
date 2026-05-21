@@ -72,8 +72,8 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         WATCHOS_DEPLOYMENT_TARGET: "10.0"
         SWIFT_VERSION: "5.9"
-        MARKETING_VERSION: "1.2.0"
-        CURRENT_PROJECT_VERSION: "10"
+        MARKETING_VERSION: "1.3.0"
+        CURRENT_PROJECT_VERSION: "11"
         DEVELOPMENT_TEAM: "QXA82BVMJ6"
     dependencies:
       - sdk: WatchConnectivity.framework
@@ -104,8 +104,8 @@ targets:
         ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS: "YES"
         TVOS_DEPLOYMENT_TARGET: "17.0"
         SWIFT_VERSION: "5.9"
-        MARKETING_VERSION: "1.2.0"
-        CURRENT_PROJECT_VERSION: "10"
+        MARKETING_VERSION: "1.3.0"
+        CURRENT_PROJECT_VERSION: "11"
         DEVELOPMENT_TEAM: "QXA82BVMJ6"
     dependencies:
       - package: Mixpanel
