@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -38,24 +39,50 @@ func handleStream(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	chunk := make([]byte, 256*1024)
-	rand.Read(chunk)
+	const maxBytes = 500 * 1024 * 1024 // hard cap — GFE can't buffer more than this
+	const chunkSize = 256 * 1024
+
+	// New clients send ?bytes=N and restart streams themselves.
+	// Old clients send no param and expect to cancel after their time window.
+	// Either way we cap at 500 MB and stop immediately on client disconnect.
+	bytesParam := r.URL.Query().Get("bytes")
+	requested, _ := strconv.ParseInt(bytesParam, 10, 64)
+	if requested <= 0 || requested > maxBytes {
+		requested = maxBytes
+	}
 
 	w.Header().Set("Content-Type", "application/octet-stream")
+	if bytesParam != "" {
+		// New clients: set Content-Length so URLSession knows when the stream ends
+		w.Header().Set("Content-Length", strconv.FormatInt(requested, 10))
+	}
 	w.Header().Set("Cache-Control", "no-store")
 	w.Header().Set("X-Accel-Buffering", "no")
 
 	flusher, canFlush := w.(http.Flusher)
+	ctx := r.Context()
 
-	// Stream until client disconnects or server hits the safety cap (60 s).
-	deadline := time.Now().Add(60 * time.Second)
-	for time.Now().Before(deadline) {
-		if _, err := w.Write(chunk); err != nil {
+	chunk := make([]byte, chunkSize)
+	rand.Read(chunk)
+
+	remaining := requested
+	for remaining > 0 {
+		select {
+		case <-ctx.Done():
+			return // client disconnected — stop immediately, don't feed GFE buffer
+		default:
+		}
+		n := int64(chunkSize)
+		if n > remaining {
+			n = remaining
+		}
+		if _, err := w.Write(chunk[:n]); err != nil {
 			return
 		}
 		if canFlush {
 			flusher.Flush()
 		}
+		remaining -= n
 	}
 }
 
